@@ -2,6 +2,10 @@ name: Build Push Sign
 #on: { push: { branches: ['main'] } }
 on: workflow_dispatch
 
+env:
+  IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image
+  TAG: signed
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,7 +29,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ghcr.io/zosocanuck/sample-venafi-csp-image:signed
+          tags: $IMAGE:$TAG
           secrets:
             GIT_AUTH_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }}
             
@@ -40,7 +44,7 @@ jobs:
         uses: zosocanuck/vsign-action@main
       - name: Sign image with a key
         run: |
-          vsign sign --image ghcr.io/zosocanuck/sample-venafi-csp-image:signed --mechanism 64
+          vsign sign --image $TAGS --mechanism 64
         env:
           TAGS: ${{ steps.docker_meta.outputs.tags }}
           VSIGN_URL: https://vh.venafidemo.com
