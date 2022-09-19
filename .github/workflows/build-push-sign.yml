@@ -29,7 +29,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: $IMAGE:$TAG
+          tags: ${{ env.IMAGE }}:${{ env.TAG }}
           secrets:
             GIT_AUTH_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }}
             
