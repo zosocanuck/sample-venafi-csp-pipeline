@@ -8,6 +8,7 @@ jobs:
     permissions:
       packages: write
       id-token: write
+      issues: write
 
     steps:
       - uses: actions/checkout@v2.3.5
@@ -24,6 +25,22 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ghcr.io/zosocanuck/sample-venafi-csp-image:v0.1
+          tags: ghcr.io/zosocanuck/sample-venafi-csp-image:signed
           secrets:
             GIT_AUTH_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }}
+            
+      - name: Production image signing approval
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: zosocanuck
+          minimum-approvals: 1
+          issue-title: "Need approval to sign container image"
+      - name: Sign image with a key
+        run: |
+          vsign sign --image ghcr.io/zosocanuck/sample-venafi-csp-image:signed --mechanism 64
+        env:
+          TAGS: ${{ steps.docker_meta.outputs.tags }}
+          VSIGN_URL: https://vh.venafidemo.com
+          VSIGN_TOKEN: ${{secrets.VSIGN_TOKEN}}
+          VSIGN_PROJECT: vsign\rsa2048-cert
