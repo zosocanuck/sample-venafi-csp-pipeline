@@ -44,6 +44,7 @@ jobs:
         uses: zosocanuck/vsign-action@main
       - name: Sign image with a key
         run: |
+          echo $TAGS
           vsign sign --image $TAGS --mechanism 64
         env:
           TAGS: ${{ steps.docker_meta.outputs.tags }}
