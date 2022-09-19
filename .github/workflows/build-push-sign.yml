@@ -36,6 +36,8 @@ jobs:
           approvers: zosocanuck
           minimum-approvals: 1
           issue-title: "Need approval to sign container image"
+      - name: Install vsign
+        uses: zosocanuck/vsign-action@main
       - name: Sign image with a key
         run: |
           vsign sign --image ghcr.io/zosocanuck/sample-venafi-csp-image:signed --mechanism 64
