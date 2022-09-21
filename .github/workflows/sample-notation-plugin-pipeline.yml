@@ -37,7 +37,7 @@ jobs:
       - name: Sign with notation
         run: |
           cat ~/config.ini
-          notation key add --name $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --pluginConfig "config"="/home/runner/config.ini"
+          notation key add --name $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --pluginConfig "config"="/home/runner/work/sample-venafi-csp-pipeline/sample-venafi-csp-pipeline/config.ini"
           notation sign --key $CERTIFICATE_LABEL $IMAGE:$TAG
         env:
           CERTIFICATE_LABEL: nirmata-dev-demo
