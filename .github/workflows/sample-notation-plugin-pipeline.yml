@@ -3,8 +3,8 @@ name: notation-venafi-csp-plugin
 on: workflow_dispatch
 
 env:
-  IMAGE: ivanvenafi.azurecr.io/sample-venafi-csp-image
-  TAG: signed
+  IMAGE: ivanvenafi.azurecr.io/net-monitor
+  TAG: v1
 
 jobs:
   build:
@@ -14,18 +14,27 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v2.3.5
-        with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Login to Azure
         uses: docker/login-action@v2
         with:
           registry: ivanvenafi.azurecr.io
           username: ${{ secrets.AZURE_USERNAME }}
           password: ${{ secrets.AZURE_PASSWORD }}
-
-      - name: build+push
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          tags: ${{ env.IMAGE }}:${{ env.TAG }}
+      - name: Install notation with plugin
+        uses: zosocanuck/notation-venafi-csp-action@main
+      - name: Sign with notation
+        run: |
+          cat <<< '
+          tpp_url = $VSIGN_URL
+          access_token = $VSIGN_TOKEN
+          tpp_project = $VSIGN_PROJECT
+          ' > /config.ini
+          notation key add --name $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --pluginConfig "config"="/config.ini"
+          notation sign --key $CERTIFICATE_LABEL $IMAGE:$TAG
+        env:
+          VSIGN_URL: https://vh.venafidemo.com
+          VSIGN_TOKEN: ${{ secrets.VSIGN_TOKEN }}
+          VSIGN_PROJECT: nirmata\dev-demo
+          CERTIFICATE_LABEL: nirmata-dev-demo
+          NOTATION_USERNAME: ${{ secrets.AZURE_USERNAME }}
+          NOTATION_PASSWORD: ${{ secrets.AZURE_PASSWORD }}
