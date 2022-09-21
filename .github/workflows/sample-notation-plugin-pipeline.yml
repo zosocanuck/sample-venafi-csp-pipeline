@@ -22,19 +22,23 @@ jobs:
           password: ${{ secrets.AZURE_PASSWORD }}
       - name: Install notation with plugin
         uses: zosocanuck/notation-venafi-csp-action@main
-      - name: Sign with notation
-        run: |
-          cat <<< '
-          tpp_url = $VSIGN_URL
-          access_token = $VSIGN_TOKEN
-          tpp_project = $VSIGN_PROJECT
-          ' > ~/config.ini
-          notation key add --name $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --pluginConfig "config"="~/config.ini"
-          notation sign --key $CERTIFICATE_LABEL $IMAGE:$TAG
+      - name: Create config.ini
+        uses: DamianReeves/write-file-action@v1.0
+        with:
+          path: ~/config.ini
+          contents: |
+            tpp_url=${{ env.VSIGN_URL }}
+            access_token=${{ env.VSIGN_TOKEN }}
+            tpp_project=${{ env.VSIGN_PROJECT }}
         env:
           VSIGN_URL: https://vh.venafidemo.com
           VSIGN_TOKEN: ${{ secrets.VSIGN_TOKEN }}
           VSIGN_PROJECT: nirmata\dev-demo
+      - name: Sign with notation
+        run: |
+          notation key add --name $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --pluginConfig "config"="~/config.ini"
+          notation sign --key $CERTIFICATE_LABEL $IMAGE:$TAG
+        env:
           CERTIFICATE_LABEL: nirmata-dev-demo
           NOTATION_USERNAME: ${{ secrets.AZURE_USERNAME }}
           NOTATION_PASSWORD: ${{ secrets.AZURE_PASSWORD }}
