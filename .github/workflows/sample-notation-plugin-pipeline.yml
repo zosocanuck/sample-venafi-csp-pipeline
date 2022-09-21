@@ -25,7 +25,7 @@ jobs:
       - name: Create config.ini
         uses: DamianReeves/write-file-action@v1.0
         with:
-          path: ~/config.ini
+          path: ${{ github.workspace }}/config.ini
           contents: |
             tpp_url=${{ env.VSIGN_URL }}
             access_token=${{ env.VSIGN_TOKEN }}
@@ -37,7 +37,7 @@ jobs:
       - name: Sign with notation
         run: |
           cat ~/config.ini
-          notation key add --name $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --pluginConfig "config"="~/config.ini"
+          notation key add --name $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --pluginConfig "config"="/home/runner/config.ini"
           notation sign --key $CERTIFICATE_LABEL $IMAGE:$TAG
         env:
           CERTIFICATE_LABEL: nirmata-dev-demo
