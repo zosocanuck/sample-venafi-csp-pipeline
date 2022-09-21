@@ -28,8 +28,8 @@ jobs:
           tpp_url = $VSIGN_URL
           access_token = $VSIGN_TOKEN
           tpp_project = $VSIGN_PROJECT
-          ' > /config.ini
-          notation key add --name $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --pluginConfig "config"="/config.ini"
+          ' > ~/config.ini
+          notation key add --name $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --pluginConfig "config"="~/config.ini"
           notation sign --key $CERTIFICATE_LABEL $IMAGE:$TAG
         env:
           VSIGN_URL: https://vh.venafidemo.com
