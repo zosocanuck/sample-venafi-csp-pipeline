@@ -50,4 +50,4 @@ jobs:
           TAGS: ${{ steps.docker_meta.outputs.tags }}
           VSIGN_URL: https://vh.venafidemo.com
           VSIGN_TOKEN: ${{secrets.VSIGN_TOKEN}}
-          VSIGN_PROJECT: vsign\rsa2048-cert
+          VSIGN_PROJECT: nirmata\dev-demo
