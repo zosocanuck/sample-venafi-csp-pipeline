@@ -1,4 +1,4 @@
-name: Build Push Sign
+name: cosign-venafi-csp-vsign
 #on: { push: { branches: ['main'] } }
 on: workflow_dispatch
 
