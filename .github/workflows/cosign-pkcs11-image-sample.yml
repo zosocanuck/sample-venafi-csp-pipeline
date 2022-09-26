@@ -1,4 +1,4 @@
-name: notation-venafi-csp-plugin
+name: cosign-pkcs11-image-sample
 #on: { push: { branches: ['main'] } }
 on: workflow_dispatch
 
