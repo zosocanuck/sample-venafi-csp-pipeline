@@ -30,4 +30,4 @@ jobs:
         uses: docker://zosocanuck/test-venafi-image:latest
       - name: Sign with cosign 
         run: |
-          venafi-sign-cosign
+          venafi-sign-jarsigner
