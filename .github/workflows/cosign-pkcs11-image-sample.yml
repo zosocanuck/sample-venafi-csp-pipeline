@@ -8,7 +8,7 @@ env:
 
 jobs:
   build:
-    runs-on: zosocanuck/test-venafi-image:latest
+    runs-on: ubuntu-latest
     permissions:
       packages: write
       id-token: write
@@ -21,8 +21,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Sign with cosign
-        run: |
-          venafi-sign-cosign
+        uses: addnab/docker-run-action@v3
+        with:
+          image: zosocanuck/test-venafi-image:latest
+          run: |
+            venafi-sign-cosign
         env:
           CERTIFICATE_LABEL: nirmata-dev-demo
           TPP_AUTH_URL: ${{ secrets.TPP_AUTH_URL }}
