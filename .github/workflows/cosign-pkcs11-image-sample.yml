@@ -26,9 +26,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - name: Sign with cosign
-        uses: addnab/docker-run-action@v3
-        with:
-          image: zosocanuck/test-venafi-image:latest
-          run: |
-            venafi-sign-cosign
+      - name: Use test image
+        uses: docker://zosocanuck/test-venafi-image:latest
+      - name: Sign with cosign 
+        run: |
+          venafi-sign-cosign
