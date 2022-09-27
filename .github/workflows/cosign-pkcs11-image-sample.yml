@@ -27,7 +27,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Use test image
-        uses: docker://zosocanuck/test-venafi-image:latest
+        uses: docker://zosocanuck/venafi-csp-cosign:ubuntu
       - name: Sign with cosign 
         run: |
-          venafi-sign-jarsigner
+          cosign sign --key "pkcs11:slot-id=0;object=${CERTIFICATE_LABEL}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${IMAGE}
