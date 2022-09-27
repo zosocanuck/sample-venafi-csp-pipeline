@@ -15,6 +15,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: zosocanuck/venafi-csp-cosign:ubuntu
     permissions:
       packages: write
       id-token: write
@@ -26,8 +28,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - name: Use test image
-        uses: docker://zosocanuck/venafi-csp-cosign:ubuntu
-      - name: Sign with cosign 
+      - name: Sign with cosign
         run: |
-          /usr/bin/cosign sign --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.IMAGE }}
+          cosign sign --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.IMAGE }}
