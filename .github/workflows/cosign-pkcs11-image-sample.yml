@@ -30,4 +30,4 @@ jobs:
         uses: docker://zosocanuck/venafi-csp-cosign:ubuntu
       - name: Sign with cosign 
         run: |
-          /usr/bin/cosign sign --key "pkcs11:slot-id=0;object=${CERTIFICATE_LABEL}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${IMAGE}
+          /usr/bin/cosign sign --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.IMAGE }}
