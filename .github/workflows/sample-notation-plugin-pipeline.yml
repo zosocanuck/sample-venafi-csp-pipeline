@@ -36,7 +36,7 @@ jobs:
         env:
           VSIGN_URL: https://vh.venafilab.com
           VSIGN_TOKEN: ${{ secrets.VSIGN_TOKEN }}
-          VSIGN_PROJECT: nirmata\dev-demo
+          VSIGN_PROJECT: nirmata\dev-demo-ztpki
       - name: Create vhroot cert file
         uses: DamianReeves/write-file-action@v1.0
         with:
