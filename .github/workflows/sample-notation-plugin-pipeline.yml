@@ -41,7 +41,7 @@ jobs:
         uses: DamianReeves/write-file-action@v1.0
         with:
           path: ${{ github.workspace }}/vhroot.crt
-          contents: ${{ secrets.VHROOT_CERT }}
+          contents: ${{ secrets.VH_ROOT_CERT }}
       - name: Sign with notation
         run: |
           notation key add $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --plugin-config "config"="${{ github.workspace }}/config.ini"
