@@ -3,9 +3,9 @@ name: notation-venafi-csp-plugin
 on: workflow_dispatch
 
 env:
-  IMAGE: ivanvenafi.azurecr.io/net-monitor
-  TAG: v1
-  PLUGIN_VERSION: 'v0.1.0-alpha.2'
+  IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image
+  TAG: signed
+  PLUGIN_VERSION: v0.1.0-alpha.2
 
 jobs:
   build:
@@ -19,8 +19,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: ${{ secrets.AZURE_USERNAME }}
-          password: ${{ secrets.AZURE_PASSWORD }}
+          username: zosocanuck
+          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Install notation with plugin
         uses: zosocanuck/notation-venafi-csp-action@main
         with:
@@ -39,9 +39,10 @@ jobs:
           VSIGN_PROJECT: nirmata\dev-demo
       - name: Sign with notation
         run: |
-          notation key add --name $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --pluginConfig "config"="${{ github.workspace }}/config.ini"
+          notation key add $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --pluginConfig "config"="${{ github.workspace }}/config.ini"
+          notation certificate add --type ca --store venafilab.com test.crt
           notation sign --key $CERTIFICATE_LABEL $IMAGE:$TAG
         env:
           CERTIFICATE_LABEL: nirmata-dev-demo
-          NOTATION_USERNAME: ${{ secrets.AZURE_USERNAME }}
-          NOTATION_PASSWORD: ${{ secrets.AZURE_PASSWORD }}
+          NOTATION_USERNAME: zosocanuck
+          NOTATION_PASSWORD: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
