@@ -39,7 +39,7 @@ jobs:
           VSIGN_PROJECT: nirmata\dev-demo
       - name: Sign with notation
         run: |
-          notation key add $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --pluginConfig "config"="${{ github.workspace }}/config.ini"
+          notation key add $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --plugin-config "config"="${{ github.workspace }}/config.ini"
           notation certificate add --type ca --store venafilab.com test.crt
           notation sign --key $CERTIFICATE_LABEL $IMAGE:$TAG
         env:
