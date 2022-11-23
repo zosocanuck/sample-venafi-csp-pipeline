@@ -37,10 +37,15 @@ jobs:
           VSIGN_URL: https://vh.venafilab.com
           VSIGN_TOKEN: ${{ secrets.VSIGN_TOKEN }}
           VSIGN_PROJECT: nirmata\dev-demo
+      - name: Create vhroot cert file
+        uses: DamianReeves/write-file-action@v1.0
+        with:
+          path: ${{ github.workspace }}/vhroot.crt
+          contents: ${{ secrets.VHROOT_CERT }}
       - name: Sign with notation
         run: |
           notation key add $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --plugin-config "config"="${{ github.workspace }}/config.ini"
-          notation certificate add --type ca --store venafilab.com test.crt
+          notation certificate add --type ca --store venafilab.com ${{ github.workspace }}/vhroot.crt
           notation sign --key $CERTIFICATE_LABEL $IMAGE:$TAG
         env:
           CERTIFICATE_LABEL: nirmata-dev-demo
