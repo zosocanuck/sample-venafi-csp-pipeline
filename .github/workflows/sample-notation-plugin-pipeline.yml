@@ -15,10 +15,10 @@ jobs:
       id-token: write
 
     steps:
-      - name: Login to Github
-        uses: docker/login-action@v2
+      - name: Login to Azure
+        uses: azure/docker-login@v1
         with:
-          registry: ivanvenafi.azurecr.io
+          login-server: ivanvenafi.azurecr.io
           username: ${{ secrets.AZURE_USERNAME }}
           password: ${{ secrets.AZURE_PASSWORD }}
       - name: Install notation with plugin
