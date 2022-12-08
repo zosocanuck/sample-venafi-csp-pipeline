@@ -9,6 +9,7 @@ env:
   TPP_USERNAME: nirmata
   TPP_PASSWORD: ${{ secrets.TPP_NIRMATA_PASSWORD }}
   IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image@sha256:521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
+  SBOM_IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image:sha256-521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
 
 jobs:
   build:
