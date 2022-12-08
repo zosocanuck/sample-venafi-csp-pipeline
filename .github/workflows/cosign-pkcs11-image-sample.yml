@@ -36,5 +36,6 @@ jobs:
         run: |
           pkcs11config getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
           cosign sign --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.IMAGE }}
-          cosign attach sbom --sbom sample-venafi-csp-image.spdx $IMAGE
-          cosign sign --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.SBOM_IMAGE }}.sbom
+          # cosign attach sbom --sbom sample-venafi-csp-image.spdx $IMAGE
+          # cosign sign --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.SBOM_IMAGE }}.sbom
+          cosign attest --predicate sample-venafi-csp-image.spdx --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" --attachment sbom ${{ env.IMAGE }}
