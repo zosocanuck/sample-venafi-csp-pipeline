@@ -30,8 +30,6 @@ jobs:
         uses: anchore/sbom-action@v0
         with:
           image: ${{ env.IMAGE }}
-          registry-username: ${{ github.actor }}
-          registry-password: $${ secrets.PERSONAL_ACCESS_TOKEN }}
           artifact-name: sample-venafi-csp-image.spdx
       - name: Sign with cosign
         run: |
