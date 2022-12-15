@@ -18,4 +18,5 @@ jobs:
           echo "::set-output name=idToken::${IDTOKEN}"
 
           # Print decoded token information for debugging purposes
+          echo $IDTOKEN
           echo $IDTOKEN | jq -R 'split(".") | .[1] | @base64d | fromjson'
