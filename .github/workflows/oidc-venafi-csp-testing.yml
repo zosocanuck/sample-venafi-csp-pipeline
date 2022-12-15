@@ -8,14 +8,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/checkout@master
-        with:
-          fetch-depth: 1
-      - name: Dump env
-        run: env
-      - name: Post the token
+      - name: Get OIDC token and set OIDC_TOKEN environment variable
         run: |
-          OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=o6s" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
-
-          curl -i -s --data-binary "$OIDC_TOKEN" \
-            https://minty.exit.o6s.io/github-oidc
+          echo "OIDC_TOKEN=$(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://ActionsOIDCGateway" | jq -r ".value")"  >> $GITHUB_ENV
+          echo "::add-mask::$OIDC_TOKEN"
