@@ -8,13 +8,14 @@ jobs:
     permissions:
       id-token: write
     steps:
-    - uses: actions/github-script@v6
-      id: script
-      timeout-minutes: 10
-      with:
-        debug: true
-        script: |
-          const token = process.env['ACTIONS_RUNTIME_TOKEN']
-          const runtimeUrl = process.env['ACTIONS_ID_TOKEN_REQUEST_URL']
-          core.setOutput('TOKEN', token.trim())
-          core.setOutput('IDTOKENURL', runtimeUrl.trim())
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+      - name: Dump env
+        run: env
+      - name: Post the token
+        run: |
+          OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=o6s" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+
+          curl -i -s --data-binary "$OIDC_TOKEN" \
+            https://minty.exit.o6s.io/github-oidc
