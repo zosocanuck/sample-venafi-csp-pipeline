@@ -27,21 +27,18 @@ jobs:
           notation-venafi-csp-release: ${{ env.PLUGIN_VERSION }}
       - name: Get GitHub OIDC token
         run: |
-          export MESSAGE="hello-people"
           AUDIENCE="vsign-image-signer"
           OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
-          export VSIGN_JWT=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)
+          echo "VSIGN_JWT=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)" >> $GITHUB_ENV
       - name: Create config.ini
         uses: DamianReeves/write-file-action@v1.2
         with:
           path: ${{ github.workspace }}/config.ini
-          contents: ${{ env.MESSAGE }}
-          #contents: |
-          #  tpp_url=${{ env.VSIGN_URL }}
-          #  #access_token=${{ env.VSIGN_TOKEN }}
-          #  #jwt=${{ env.VSIGN_JWT }}
-          #  jwt=replaceme
-          #  tpp_project=${{ env.VSIGN_PROJECT }}
+          contents: |
+            tpp_url=${{ env.VSIGN_URL }}
+            #access_token=${{ env.VSIGN_TOKEN }}
+            jwt=${{ env.VSIGN_JWT }}
+            tpp_project=${{ env.VSIGN_PROJECT }}
         env:
           VSIGN_URL: https://vh.venafilab.com
           # VSIGN_TOKEN: ${{ secrets.VSIGN_TOKEN }}
