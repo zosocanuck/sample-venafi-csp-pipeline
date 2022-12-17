@@ -39,7 +39,7 @@ jobs:
             tpp_url=${{ env.VSIGN_URL }}
             #access_token=${{ env.VSIGN_TOKEN }}
             #jwt=${{ env.VSIGN_JWT }}
-            jwt=${{ env.MESSAGE }}
+            jwt=${{ MESSAGE }}
             tpp_project=${{ env.VSIGN_PROJECT }}
         env:
           VSIGN_URL: https://vh.venafilab.com
