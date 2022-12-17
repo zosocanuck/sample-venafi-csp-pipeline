@@ -27,6 +27,7 @@ jobs:
           notation-venafi-csp-release: ${{ env.PLUGIN_VERSION }}
       - name: Get GitHub OIDC token
         run: |
+          MESSAGE="hello-people"
           AUDIENCE="vsign-image-signer"
           OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
           export VSIGN_JWT=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)
@@ -37,7 +38,8 @@ jobs:
           contents: |
             tpp_url=${{ env.VSIGN_URL }}
             #access_token=${{ env.VSIGN_TOKEN }}
-            jwt=${{ env.VSIGN_JWT }}
+            #jwt=${{ env.VSIGN_JWT }}
+            jwt=${{ env.MESSAGE }}
             tpp_project=${{ env.VSIGN_PROJECT }}
         env:
           VSIGN_URL: https://vh.venafilab.com
