@@ -35,12 +35,13 @@ jobs:
         uses: DamianReeves/write-file-action@v1.2
         with:
           path: ${{ github.workspace }}/config.ini
-          contents: |
-            tpp_url=${{ env.VSIGN_URL }}
-            #access_token=${{ env.VSIGN_TOKEN }}
-            #jwt=${{ env.VSIGN_JWT }}
-            jwt=${{ env.MESSAGE }}
-            tpp_project=${{ env.VSIGN_PROJECT }}
+          contents: ${{ env.MESSAGE }}
+          #contents: |
+          #  tpp_url=${{ env.VSIGN_URL }}
+          #  #access_token=${{ env.VSIGN_TOKEN }}
+          #  #jwt=${{ env.VSIGN_JWT }}
+          #  jwt=replaceme
+          #  tpp_project=${{ env.VSIGN_PROJECT }}
         env:
           VSIGN_URL: https://vh.venafilab.com
           # VSIGN_TOKEN: ${{ secrets.VSIGN_TOKEN }}
