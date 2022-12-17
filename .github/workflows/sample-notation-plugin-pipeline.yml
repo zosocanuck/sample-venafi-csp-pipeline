@@ -44,7 +44,7 @@ jobs:
           # VSIGN_TOKEN: ${{ secrets.VSIGN_TOKEN }}
           VSIGN_PROJECT: nirmata\dev-demo-ztpki
       - name: Create vhroot cert file
-        uses: DamianReeves/write-file-action@v1.0
+        uses: DamianReeves/write-file-action@v1.2
         with:
           path: ${{ github.workspace }}/vhroot.crt
           contents: ${{ secrets.VH_ROOT_CERT }}
