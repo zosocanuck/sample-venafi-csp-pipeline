@@ -25,14 +25,19 @@ jobs:
         uses: zosocanuck/notation-venafi-csp-action@main
         with:
           notation-venafi-csp-release: ${{ env.PLUGIN_VERSION }}
+      - name: Get GitHub OIDC token
+        run: |
+          AUDIENCE="vsign-image-signer"
+          OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
+          VSIGN_JWT=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)
       - name: Create config.ini
         uses: DamianReeves/write-file-action@v1.0
         with:
           path: ${{ github.workspace }}/config.ini
           contents: |
             tpp_url=${{ env.VSIGN_URL }}
-            # access_token=${{ env.VSIGN_TOKEN }}
-            jwt=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=vsign-image-signer" | jq -r .value)
+            #access_token=${{ env.VSIGN_TOKEN }}
+            jwt=${{ env.VSIGN_JWT }}
             tpp_project=${{ env.VSIGN_PROJECT }}
         env:
           VSIGN_URL: https://vh.venafilab.com
