@@ -36,12 +36,10 @@ jobs:
           path: ${{ github.workspace }}/config.ini
           contents: |
             tpp_url=${{ env.VSIGN_URL }}
-            #access_token=${{ env.VSIGN_TOKEN }}
             jwt=${{ env.VSIGN_JWT }}
             tpp_project=${{ env.VSIGN_PROJECT }}
         env:
           VSIGN_URL: https://vh.venafilab.com
-          # VSIGN_TOKEN: ${{ secrets.VSIGN_TOKEN }}
           VSIGN_PROJECT: nirmata\dev-demo-ztpki
       - name: Create vhroot cert file
         uses: DamianReeves/write-file-action@v1.2
