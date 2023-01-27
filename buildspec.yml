@@ -26,6 +26,6 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
       - docker push docker.io/zosocanuck/$IMAGE_REPO_NAME:$IMAGE_TAG
-      - CSP authentication
+      - echo CSP authentication
       - /opt/venafi/codesign/bin/pkcs11config getgrant --force --authurl=https://$TPP_URL/vedauth --hsmurl=https://$TPP_URL/vedhsm --username=$USERNAME --password=$PASSWORD
       - cosign sign --key "pkcs11:slot-id=0;object=Development-Environment-Development?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" docker.io/zosocanuck/$IMAGE_REPO_NAME:$IMAGE_TAG
