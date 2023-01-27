@@ -1,0 +1,41 @@
+name: cosign-pkcs11-image-sample
+#on: { push: { branches: ['main'] } }
+on: workflow_dispatch
+
+env:
+  CERTIFICATE_LABEL: nirmata-dev-demo
+  TPP_AUTH_URL: ${{ secrets.TPP_AUTH_URL }}
+  TPP_HSM_URL: ${{ secrets.TPP_HSM_URL }}
+  TPP_USERNAME: nirmata
+  TPP_PASSWORD: ${{ secrets.TPP_NIRMATA_PASSWORD }}
+  IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image@sha256:521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
+  SBOM_IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image:sha256-521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: zosocanuck/venafi-csp-cosign:ubuntu
+    permissions:
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Login to Github
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Create SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ env.IMAGE }}
+          artifact-name: sample-venafi-csp-image.spdx
+      - name: Sign with cosign
+        run: |
+          pkcs11config getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
+          cosign sign --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.IMAGE }}
+          cosign attach sbom --sbom sample-venafi-csp-image.spdx $IMAGE
+          cosign sign --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.SBOM_IMAGE }}.sbom
+          # cosign attest --predicate sample-venafi-csp-image.spdx --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" --attachment sbom ${{ env.IMAGE }}

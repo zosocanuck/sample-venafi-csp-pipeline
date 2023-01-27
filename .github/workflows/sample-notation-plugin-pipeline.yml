@@ -1,0 +1,57 @@
+name: notation-venafi-csp-plugin
+#on: { push: { branches: ['main'] } }
+on: workflow_dispatch
+
+env:
+  IMAGE: ivanvenafi.azurecr.io/net-monitor
+  TAG: v1
+  PLUGIN_VERSION: v0.1.0-alpha.2
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Login to Azure
+        uses: azure/docker-login@v1
+        with:
+          login-server: ivanvenafi.azurecr.io
+          username: ${{ secrets.AZURE_USERNAME }}
+          password: ${{ secrets.AZURE_PASSWORD }}
+      - name: Install notation with plugin
+        uses: zosocanuck/notation-venafi-csp-action@main
+        with:
+          notation-venafi-csp-release: ${{ env.PLUGIN_VERSION }}
+      - name: Get GitHub OIDC token
+        run: |
+          AUDIENCE="vsign-image-signer"
+          OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
+          echo "VSIGN_JWT=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)" >> $GITHUB_ENV
+      - name: Create config.ini
+        uses: DamianReeves/write-file-action@v1.2
+        with:
+          path: ${{ github.workspace }}/config.ini
+          contents: |
+            tpp_url=${{ env.VSIGN_URL }}
+            jwt=${{ env.VSIGN_JWT }}
+            tpp_project=${{ env.VSIGN_PROJECT }}
+        env:
+          VSIGN_URL: https://vh.venafilab.com
+          VSIGN_PROJECT: nirmata\dev-demo-ztpki
+      - name: Create vhroot cert file
+        uses: DamianReeves/write-file-action@v1.2
+        with:
+          path: ${{ github.workspace }}/vhroot.crt
+          contents: ${{ secrets.VH_ROOT_CERT }}
+      - name: Sign with notation
+        run: |
+          notation key add $CERTIFICATE_LABEL --plugin venafi-csp --id $CERTIFICATE_LABEL --plugin-config "config"="${{ github.workspace }}/config.ini"
+          notation certificate add --type ca --store venafilab.com ${{ github.workspace }}/vhroot.crt
+          notation sign --key $CERTIFICATE_LABEL $IMAGE:$TAG
+        env:
+          CERTIFICATE_LABEL: nirmata-dev-demo
+          NOTATION_USERNAME: ${{ secrets.AZURE_USERNAME }}
+          NOTATION_PASSWORD: ${{ secrets.AZURE_PASSWORD }}
