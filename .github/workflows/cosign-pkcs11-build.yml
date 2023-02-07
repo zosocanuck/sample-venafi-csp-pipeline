@@ -43,4 +43,5 @@ jobs:
       - name: Sign with cosign
         run: |
           pkcs11config getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
-          cosign generate ${{ env.IMAGE_TEST }}:${{ env.TAG }}
+          # cosign generate ${{ env.IMAGE_TEST }}:${{ env.TAG }}
+          echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
