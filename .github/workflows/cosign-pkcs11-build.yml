@@ -27,13 +27,11 @@ jobs:
         with:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: zot
-        run: | 
-          - name: zot
-            run: |
-              docker run --rm -d --name zot \
-                -p 127.0.0.1:5000:5000 \
-                ghcr.io/project-zot/zot-linux-amd64:latest
-              curl -s http://localhost:5000/v2/ -o /dev/null || sleep 2
+        run: |    
+          docker run --rm -d --name zot \
+            -p 127.0.0.1:5000:5000 \
+            ghcr.io/project-zot/zot-linux-amd64:latest
+          curl -s http://localhost:5000/v2/ -o /dev/null || sleep 2
       - name: build
         uses: docker/build-push-action@v3
         with:
