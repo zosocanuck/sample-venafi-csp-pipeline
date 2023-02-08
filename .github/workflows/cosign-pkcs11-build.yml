@@ -30,7 +30,7 @@ jobs:
         run: |    
           docker run --rm -d --name zot \
             -p 127.0.0.1:5000:5000 \
-            ghcr.io/project-zot/zot-linux-amd64:latest
+            ghcr.io/project-zot/zot-linux-amd64:v1.4.0
           curl -s http://localhost:5000/v2/ -o /dev/null || sleep 2
       - name: build
         uses: docker/build-push-action@v3
