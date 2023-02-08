@@ -28,7 +28,7 @@ jobs:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: zot
         run: |    
-          docker run --rm -d -p 5000:5000 --name registry registry:2
+          docker run -d -p 5000:5000 --name registry registry:2
       - name: build
         uses: docker/build-push-action@v3
         with:
