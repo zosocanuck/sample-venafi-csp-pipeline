@@ -6,7 +6,9 @@ env:
 
 jobs:
   build:
-    runs-on: zosocanuck/venafi-csp-notation:ubuntu
+    runs-on: ubuntu-latest
+    container:
+        image: zosocanuck/venafi-csp-notation:ubuntu
     permissions:
       packages: write
       id-token: write
