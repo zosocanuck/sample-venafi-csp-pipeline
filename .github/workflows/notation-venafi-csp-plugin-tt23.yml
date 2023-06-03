@@ -40,8 +40,8 @@ jobs:
           VSIGN_PROJECT: vsign\ztpki-rsa2048
       - name: Sign with notation
         run: |
-          export NOTATION_EXPERIMENTAL=1
+          # export NOTATION_EXPERIMENTAL=1
           notation key add ${{ env.CERTIFICATE_LABEL }} --plugin venafi-csp --id ${{ env.CERTIFICATE_LABEL }} --plugin-config "config"="${{ github.workspace }}/config.ini"
-          notation sign -k ${{ env.CERTIFICATE_LABEL }} --signature-manifest=image $IMAGE
+          notation sign -k ${{ env.CERTIFICATE_LABEL }} $IMAGE
         env:
           CERTIFICATE_LABEL: vsign-ztpki-rsa2048
