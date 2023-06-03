@@ -3,12 +3,11 @@ on: workflow_dispatch
 
 env:
     IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image@sha256:521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
-
+    PLUGIN_VERSION: v0.1.0-beta
+    
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-        image: zosocanuck/venafi-csp-notation:ubuntu
     permissions:
       packages: write
       id-token: write
@@ -20,6 +19,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Install notation with plugin
+        uses: zosocanuck/notation-venafi-csp-action@main
+        with:
+          notation-venafi-csp-release: ${{ env.PLUGIN_VERSION }}
       - name: Get GitHub OIDC token
         run: |
           AUDIENCE="vsign-image-signer"
