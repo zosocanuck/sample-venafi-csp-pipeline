@@ -1,0 +1,42 @@
+name: notation-venafi-csp-plugin-tt23
+on: workflow_dispatch
+
+env:
+    IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image@sha256:521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
+
+jobs:
+  build:
+    runs-on: zosocanuck/venafi-csp-notation:ubuntu
+    permissions:
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Login to Github
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Get GitHub OIDC token
+        run: |
+          AUDIENCE="vsign-image-signer"
+          OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
+          echo "VSIGN_JWT=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)" >> $GITHUB_ENV
+      - name: Create config.ini
+        uses: DamianReeves/write-file-action@v1.2
+        with:
+          path: ${{ github.workspace }}/config.ini
+          contents: |
+            tpp_url=${{ secrets.TPP_URL }}
+            jwt=${{ env.VSIGN_JWT }}
+            tpp_project=${{ env.VSIGN_PROJECT }}
+        env:
+          VSIGN_PROJECT: vsign\ztpki-rsa2048
+      - name: Sign with notation
+        run: |
+          export NOTATION_EXPERIMENTAL=1
+          notation key add ${{ env.CERTIFICATE_LABEL }} --plugin venafi-csp --id ${{ env.CERTIFICATE_LABEL }} --plugin-config "config"="${{ github.workspace }}/config.ini"
+          notation sign -k ${{ env.CERTIFICATE_LABEL }} --signature-manifest=image $IMAGE
+        env:
+          CERTIFICATE_LABEL: vsign-ztpki-rsa2048
