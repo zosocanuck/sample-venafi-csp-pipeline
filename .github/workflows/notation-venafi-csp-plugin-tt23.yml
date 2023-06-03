@@ -34,8 +34,8 @@ jobs:
           path: ${{ github.workspace }}/config.ini
           contents: |
             tpp_url=${{ secrets.TPP_URL }}
-            access_token=${{ secrets.TPP_TOKEN }}
-            # jwt=${{ env.VSIGN_JWT }}
+            # access_token=${{ secrets.TPP_TOKEN }}
+            jwt=${{ env.VSIGN_JWT }}
             tpp_project=${{ env.VSIGN_PROJECT }}
         env:
           VSIGN_PROJECT: vsign\ztpki-rsa2048
