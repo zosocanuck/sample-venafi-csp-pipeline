@@ -26,16 +26,20 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - name: Create SBOM
-        uses: anchore/sbom-action@v0.14.2
-        with:
-          image: ${{ env.IMAGE }}
-          artifact-name: sample-venafi-csp-image.spdx
-          output-file: ${{ github.workspace }}/sample-venafi-csp-image.spdx
-          upload-artifact: true
+#      - name: Create SBOM
+#        uses: anchore/sbom-action@v0.14.2
+#        with:
+#          image: ${{ env.IMAGE }}
+#          artifact-name: sample-venafi-csp-image.spdx
+#          output-file: ${{ github.workspace }}/sample-venafi-csp-image.spdx
+#          upload-artifact: true
+      - name: SBOM generation
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+          syft ${{ env.IMAGE }} -o spdx > latest.spdx
       - name: Sign with cosign
         run: |
           pkcs11config getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
           cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.IMAGE }}
-          cosign attach sbom --sbom ${{ github.workspace }}/sample-venafi-csp-image.spdx ${{ env.IMAGE }}
+          cosign attach sbom --sbom latest.spdx ${{ env.IMAGE }}
           cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.SBOM_IMAGE }}.sbom
