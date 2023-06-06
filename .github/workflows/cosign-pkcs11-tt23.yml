@@ -32,6 +32,7 @@ jobs:
           image: ${{ env.IMAGE }}
           artifact-name: sample-venafi-csp-image.spdx
           output-file: ${{ github.workspace }}/sample-venafi-csp-image.spdx
+          upload-artifact: true
       - name: Sign with cosign
         run: |
           pkcs11config getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
