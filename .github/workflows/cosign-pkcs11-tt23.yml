@@ -26,13 +26,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-#      - name: Create SBOM
-#        uses: anchore/sbom-action@v0.14.2
-#        with:
-#          image: ${{ env.IMAGE }}
-#          artifact-name: sample-venafi-csp-image.spdx
-#          output-file: ${{ github.workspace }}/sample-venafi-csp-image.spdx
-#          upload-artifact: true
       - name: SBOM generation
         run: |
           apt-get update
@@ -45,3 +38,7 @@ jobs:
           cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.IMAGE }}
           cosign attach sbom --sbom latest.spdx ${{ env.IMAGE }}
           cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.SBOM_IMAGE }}.sbom
+      - name: Verify with cosign
+        run: |
+          cosign verify --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.IMAGE }}
+          cosign verify --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.SBOM_IMAGE }}.sbom
