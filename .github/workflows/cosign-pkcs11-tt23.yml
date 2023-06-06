@@ -35,6 +35,8 @@ jobs:
 #          upload-artifact: true
       - name: SBOM generation
         run: |
+          apt-get update
+          apt-get install --no-install-recommends -y curl ca-certificates
           curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
           syft ${{ env.IMAGE }} -o spdx > latest.spdx
       - name: Sign with cosign
