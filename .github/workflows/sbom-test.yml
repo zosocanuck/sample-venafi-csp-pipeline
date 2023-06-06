@@ -1,0 +1,33 @@
+name: cosign-pkcs11-tt23
+on: workflow_dispatch
+
+env:
+  CERTIFICATE_LABEL: Supply-Chain-Production
+  TPP_AUTH_URL: ${{ secrets.TPP_AUTH_URL }}
+  TPP_HSM_URL: ${{ secrets.TPP_HSM_URL }}
+  TPP_USERNAME: sample-cs-user
+  TPP_PASSWORD: ${{ secrets.TPP_PASSWORD }}
+  IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image@sha256:521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
+  SBOM_IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image:sha256-521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Login to Github
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Create SBOM
+        uses: anchore/sbom-action@v0.14.2
+        with:
+          image: ${{ env.IMAGE }}
+          artifact-name: sample-venafi-csp-image.spdx
+          output-file: ${{ github.workspace }}/sample-venafi-csp-image.spdx
+          upload-artifact: true
