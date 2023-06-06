@@ -1,4 +1,4 @@
-name: cosign-pkcs11-tt23
+name: sbom-test
 on: workflow_dispatch
 
 env:
