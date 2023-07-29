@@ -2,7 +2,7 @@ name: cosign-pkcs11-tt23
 on: workflow_dispatch
 
 env:
-  CERTIFICATE_LABEL: ztpki-rsa2048-cert
+  CERTIFICATE_LABEL: vsign-ztpki-rsa2048
   TPP_AUTH_URL: ${{ secrets.TPP_AUTH_URL }}
   TPP_HSM_URL: ${{ secrets.TPP_HSM_URL }}
   TPP_USERNAME: sample-cs-user
