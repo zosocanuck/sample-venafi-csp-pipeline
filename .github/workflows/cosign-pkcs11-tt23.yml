@@ -43,3 +43,4 @@ jobs:
         run: |
           cosign verify --insecure-ignore-tlog --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.IMAGE }}
           cosign verify --insecure-ignore-tlog --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.SBOM_IMAGE }}.sbom
+          cosign tree ${{ env.IMAGE }}
