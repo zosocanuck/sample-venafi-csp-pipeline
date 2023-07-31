@@ -1,0 +1,43 @@
+name: cosign-pkcs11-sbom-demo
+on: workflow_dispatch
+
+env:
+  CERTIFICATE_LABEL: vsign-ztpki-rsa2048
+  TPP_AUTH_URL: ${{ secrets.TPP_AUTH_URL }}
+  TPP_HSM_URL: ${{ secrets.TPP_HSM_URL }}
+  TPP_USERNAME: sample-cs-user
+  TPP_PASSWORD: ${{ secrets.TPP_PASSWORD }}
+  IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image@sha256:521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
+  SBOM_IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image:sha256-521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: zosocanuck/venafi-csp-cosign:ubuntu
+    permissions:
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Login to Github
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: SBOM generation
+        run: |
+          apt-get update
+          apt-get install --no-install-recommends -y curl ca-certificates
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+          syft ${{ env.IMAGE }} -o spdx > latest.spdx
+      - name: Sign with cosign
+        run: |
+          pkcs11config getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
+          cosign attach sbom --sbom latest.spdx ${{ env.IMAGE }}
+          cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.SBOM_IMAGE }}.sbom
+      - name: Verify with cosign
+        run: |
+          cosign verify --insecure-ignore-tlog --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.SBOM_IMAGE }}.sbom
+          cosign tree ${{ env.IMAGE }}
