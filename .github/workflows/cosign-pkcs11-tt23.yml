@@ -26,21 +26,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - name: SBOM generation
-        run: |
-          apt-get update
-          apt-get install --no-install-recommends -y curl ca-certificates
-          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
-          syft ${{ env.IMAGE }} -o spdx > latest.spdx
       - name: Sign with cosign
         run: |
           pkcs11config getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
-          # cosign sign --tlog-upload=false --key pkcs11:token=Remote%20Token;slot-id=0;object=Supply-Chain-Production?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=none ${{ env.IMAGE }}
           cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=none" ${{ env.IMAGE }}
-          cosign attach sbom --sbom latest.spdx ${{ env.IMAGE }}
-          cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.SBOM_IMAGE }}.sbom
       - name: Verify with cosign
         run: |
           cosign verify --insecure-ignore-tlog --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.IMAGE }}
-          cosign verify --insecure-ignore-tlog --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.SBOM_IMAGE }}.sbom
           cosign tree ${{ env.IMAGE }}
