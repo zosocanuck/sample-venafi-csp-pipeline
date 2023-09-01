@@ -3,3 +3,16 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2019
 # Install Signtool
 ADD ./install-signtool.ps1 /build/
 RUN powershell /build/install-signtool.ps1
+
+# Install Venafi client tools
+ADD ./client.msi /build/
+ADD ./install-venafi-client-tools.ps1 /build/
+RUN powershell /build/install-venafi-client-tools.ps1
+
+# With VENAFICSPSilent, when an error occurs at the Venafi CSP driver level,
+# that error is printed as part of the console output, instead of shown
+# in a dialog box that requires the user to click OK.
+ENV VENAFICSPSilent=1
+ENV VENAFI_CONTAINER=true
+ENV VENAFI_CONTAINER_REGISTER_CSP_DLL=true
+ENV ISOLATE_SESSIONS=false
