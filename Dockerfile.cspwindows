@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/windows/servercore:ltsc2019
 
 # Install Signtool
-ADD install-signtool.ps1 \build\
-RUN powershell \build\install-signtool.ps1
+ADD ./install-signtool.ps1 /build/
+RUN powershell /build/install-signtool.ps1
