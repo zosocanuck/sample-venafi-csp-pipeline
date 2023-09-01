@@ -1,0 +1,14 @@
+name: Windows test
+
+on: workflow_dispatch
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile.cspwindows --tag zosocanuck/csp-test
