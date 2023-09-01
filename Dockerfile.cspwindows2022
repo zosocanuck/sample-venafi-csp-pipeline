@@ -1,4 +1,5 @@
-FROM mcr.microsoft.com/windows/servercore:ltsc2022
+#FROM mcr.microsoft.com/windows/servercore:ltsc2022
+FROM mcr.microsoft.com/windows/servercore/insider:10.0.20348.1
 
 # Install Signtool
 ADD ./install-signtool.ps1 /build/
