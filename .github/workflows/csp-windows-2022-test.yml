@@ -1,4 +1,4 @@
-name: Windows test
+name: Windows 2022 test
 
 on: workflow_dispatch
 
