@@ -3,7 +3,7 @@ on: workflow_dispatch
 
 env:
     IMAGE: ghcr.io/zosocanuck/net-monitor:v1
-    PLUGIN_VERSION: v0.1.0-beta
+    PLUGIN_VERSION: v0.2.0-beta
     
 jobs:
   build:
