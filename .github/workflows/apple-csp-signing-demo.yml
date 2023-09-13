@@ -10,7 +10,7 @@ env:
 
 jobs:
   build:
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,4 +42,4 @@ jobs:
           tkdriverconfig sync
           tkdriverconfig listobjects
           # security export-smartcard token
-          codesign --force -o runtime --sign "${{ env.SIGNING_CERTIFICATE }}" archives.xcarchive/Products/Applications/SampleIOSApp.app
+          codesign -v --force -o runtime --sign "${{ env.SIGNING_CERTIFICATE }}" archives.xcarchive/Products/Applications/SampleIOSApp.app
