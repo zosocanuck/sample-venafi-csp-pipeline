@@ -22,18 +22,18 @@ jobs:
           sudo hdiutil attach "Venafi CodeSign Protect Clients v23.1.0.dmg" -noautoopen -mountpoint installer/
           sudo installer -pkg "installer/Venafi CodeSign Protect Clients.pkg/" -target /
           sudo hdiutil detach installer
-      - name: Register driver
-        run: |
-          echo "Asking pluginkit to unregister all plugins"
-          pluginkit -v -D -m -i com.venafi.codesigning.client.application.driver | sed 's/[^/]*//' | xargs -L1 -I {} pluginkit -r {} 
-          echo "Asking pluginkit to load the plugin that was just installed"
-          pluginkit -v -a "/Applications/Venafi Code Signing Client.app/Contents/PlugIns/Venafi Code Signing Token Driver.appex"
-          echo "Loaded plugins"
-          sleep 1
-          pluginkit -v -D -m -i com.venafi.codesigning.client.application.driver
-          echo "Restarting the CryptoTokenKit Daemon (ctkd)"
-          killall ctkd
-          echo "Complete"
+      #- name: Register driver
+      #  run: |
+      #    echo "Asking pluginkit to unregister all plugins"
+      #    pluginkit -v -D -m -i com.venafi.codesigning.client.application.driver | sed 's/[^/]*//' | xargs -L1 -I {} pluginkit -r {} 
+      #    echo "Asking pluginkit to load the plugin that was just installed"
+      #    pluginkit -v -a "/Applications/Venafi Code Signing Client.app/Contents/PlugIns/Venafi Code Signing Token Driver.appex"
+      #    echo "Loaded plugins"
+      #    sleep 1
+      #    pluginkit -v -D -m -i com.venafi.codesigning.client.application.driver
+      #    echo "Restarting the CryptoTokenKit Daemon (ctkd)"
+      #    killall ctkd
+      #    echo "Complete"
       - name: Sign with xcode
         run: |
           tkdriverconfig getgrant --force --authurl=${{ env.TPP_AUTH_URL }} --hsmurl=${{ env.TPP_HSM_URL }} --username=${{ env.TPP_USERNAME }} --password=${{ env.TPP_PASSWORD }}
