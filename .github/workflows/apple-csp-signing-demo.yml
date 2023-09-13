@@ -5,8 +5,8 @@ env:
   SIGNING_CERTIFICATE: "Apple Development: Ivan Wallis (W98N684K7V)"
   TPP_AUTH_URL: ${{ secrets.TPP_AUTH_URL }}
   TPP_HSM_URL: ${{ secrets.TPP_HSM_URL }}
-  TPP_USERNAME: nirmata
-  TPP_PASSWORD: ${{ secrets.TPP_NIRMATA_PASSWORD }}
+  TPP_USERNAME: sample-demo-user
+  TPP_PASSWORD: ${{ secrets.TPP_DEMO_PASSWORD }}
 
 jobs:
   build:
@@ -18,4 +18,6 @@ jobs:
           token: ${{ secrets.GITLAB_TOKEN }}
       - name: Sign with xcode
         run: |
+          tkdriverconfig getgrant --authurl=${{ env.TPP_AUTH_URL }} --hsmurl=${{ env.TPP_HSM_URL }} --username=${{ env.TPP_USERNAME }} --password=${{ env.TPP_DEMO_PASSWORD }} --hsmurl=${{
+          tkdriverconfig sync
           codesign --force -o runtime --sign "${{ env.SIGNING_CERTIFICATE }}" archives.xcarchive/Products/Applications/SampleIOSApp.app
