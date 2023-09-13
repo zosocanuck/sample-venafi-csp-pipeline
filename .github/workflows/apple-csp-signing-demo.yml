@@ -1,0 +1,21 @@
+name: apple-csp-signing-demo
+on: workflow_dispatch
+
+env:
+  SIGNING_CERTIFICATE: "Apple Development: Ivan Wallis (W98N684K7V)"
+  TPP_AUTH_URL: ${{ secrets.TPP_AUTH_URL }}
+  TPP_HSM_URL: ${{ secrets.TPP_HSM_URL }}
+  TPP_USERNAME: nirmata
+  TPP_PASSWORD: ${{ secrets.TPP_NIRMATA_PASSWORD }}
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: gitlab.com/ivan.wallis/apple-csp-signing-demo
+          token: ${{ secrets.GITLAB_TOKEN }}
+      - name: Sign with xcode
+        run: |
+          codesign --force -o runtime --sign "${{ env.SIGNING_CERTIFICATE }}" archives.xcarchive/Products/Applications/SampleIOSApp.app
