@@ -24,6 +24,8 @@ jobs:
           sudo hdiutil detach installer
       - name: Register driver
         run: |
+          echo "Asking pluginkit to unregister all plugins"
+          pluginkit -v -D -m -i com.venafi.codesigning.client.application.driver | sed 's/[^/]*//' | xargs -L1 -I {} pluginkit -r {} 
           echo "Asking pluginkit to load the plugin that was just installed"
           pluginkit -v -a "/Applications/Venafi Code Signing Client.app/Contents/PlugIns/Venafi Code Signing Token Driver.appex"
           echo "Loaded plugins"
