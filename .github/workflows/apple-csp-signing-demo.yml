@@ -36,7 +36,7 @@ jobs:
       #    echo "Complete"
       - name: Sign with xcode
         run: |
-          open "/Applications/Venafi Code Signing Client.app"
+          # open "/Applications/Venafi Code Signing Client.app"
           security unlock-keychain
           tkdriverconfig getgrant --force --authurl=${{ env.TPP_AUTH_URL }} --hsmurl=${{ env.TPP_HSM_URL }} --username=${{ env.TPP_USERNAME }} --password=${{ env.TPP_PASSWORD }}
           tkdriverconfig sync
