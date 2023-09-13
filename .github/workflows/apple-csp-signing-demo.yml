@@ -24,6 +24,6 @@ jobs:
           sudo hdiutil detach installer
       - name: Sign with xcode
         run: |
-          tkdriverconfig getgrant --authurl=${{ env.TPP_AUTH_URL }} --hsmurl=${{ env.TPP_HSM_URL }} --username=${{ env.TPP_USERNAME }} --password=${{ env.TPP_DEMO_PASSWORD }}
+          tkdriverconfig getgrant --force --authurl=${{ env.TPP_AUTH_URL }} --hsmurl=${{ env.TPP_HSM_URL }} --username=${{ env.TPP_USERNAME }} --password=${{ env.TPP_DEMO_PASSWORD }}
           tkdriverconfig sync
           codesign --force -o runtime --sign "${{ env.SIGNING_CERTIFICATE }}" archives.xcarchive/Products/Applications/SampleIOSApp.app
