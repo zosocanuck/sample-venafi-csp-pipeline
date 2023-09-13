@@ -14,8 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: gitlab.com/ivan.wallis/apple-csp-signing-demo
-          token: ${{ secrets.GITLAB_TOKEN }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Install client
         run: |
           curl -o "Venafi CodeSign Protect Clients v23.1.0.dmg" https://vh.venafilab.com/csc/clients/venafi-csc-latest-x86_64.dmg
