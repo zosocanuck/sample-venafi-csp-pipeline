@@ -39,5 +39,5 @@ jobs:
           tkdriverconfig getgrant --force --authurl=${{ env.TPP_AUTH_URL }} --hsmurl=${{ env.TPP_HSM_URL }} --username=${{ env.TPP_USERNAME }} --password=${{ env.TPP_PASSWORD }}
           tkdriverconfig sync
           tkdriverconfig listobjects
-          security export-smartcard token
+          # security export-smartcard token
           codesign --force -o runtime --sign "${{ env.SIGNING_CERTIFICATE }}" archives.xcarchive/Products/Applications/SampleIOSApp.app
