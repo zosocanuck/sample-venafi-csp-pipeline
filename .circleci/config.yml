@@ -12,7 +12,12 @@ jobs:
       - checkout
       - run:
           name: "build app"
-          command: "xcodebuild -version"
+          command: |
+            curl -o "Venafi CodeSign Protect Clients v23.1.0.dmg" https://vh.venafilab.com/csc/clients/venafi-csc-latest-x86_64.dmg
+            mkdir -p installer
+            sudo hdiutil attach "Venafi CodeSign Protect Clients v23.1.0.dmg" -noautoopen -mountpoint installer/
+            sudo installer -pkg "installer/Venafi CodeSign Protect Clients.pkg/" -target /
+            sudo hdiutil detach installer
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
