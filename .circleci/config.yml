@@ -8,6 +8,8 @@ jobs:
   build:
     macos:
       xcode: 15.0.0
+    environment:
+      SIGNING_CERTIFICATE: "Apple Development: Ivan Wallis (W98N684K7V)"
     steps:
       - checkout
       - run:
@@ -18,6 +20,14 @@ jobs:
             sudo hdiutil attach "Venafi CodeSign Protect Clients v23.1.0.dmg" -noautoopen -mountpoint installer/
             sudo installer -pkg "installer/Venafi CodeSign Protect Clients.pkg/" -target /
             sudo hdiutil detach installer
+      - run:
+          name: "sign app"
+          command: |
+            open "/Applications/Venafi Code Signing Client.app"
+            tkdriverconfig getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
+            tkdriverconfig sync
+            tkdriverconfig listobjects
+            codesign -v --force -o runtime --sign "$SIGNING_CERTIFICATE" archives.xcarchive/Products/Applications/SampleIOSApp.app
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
