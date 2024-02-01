@@ -3,7 +3,8 @@ on: workflow_dispatch
 
 env:
     IMAGE: ghcr.io/zosocanuck/net-monitor:v1
-    PLUGIN_VERSION: v0.2.0-beta
+    NOTATION_VERSION: 1.1.0
+    PLUGIN_VERSION: 0.3.0
     
 jobs:
   build:
@@ -19,10 +20,14 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - name: Install notation with plugin
-        uses: zosocanuck/notation-venafi-csp-action@main
+      - name: Setup notation CLI
+        uses: notaryproject/notation-action/setup@v1
         with:
-          notation-venafi-csp-release: ${{ env.PLUGIN_VERSION }}
+          version: ${{ env.NOTATION_VERSION }}
+      - name: Install Venafi plugin
+        run: |
+          notation plugin install --url https://github.com/Venafi/notation-venafi-csp/releases/download/v${{ env.PLUGIN_VERSION }}/notation-venafi-csp-linux-amd64.tar.gz --sha256sum ${{ env.PLUGIN_LINUX_AMD64_SHA256 }}
+          notation plugin ls
       - name: Get GitHub OIDC token
         run: |
           AUDIENCE="vsign-image-signer"
