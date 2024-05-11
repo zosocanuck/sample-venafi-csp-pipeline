@@ -10,12 +10,11 @@ env:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: gitlab.com/ivan.wallis/apple-csp-signing-demo
-          token: ${{ secrets.GITLAB_TOKEN }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Install client
         run: |
           curl -o "Venafi CodeSign Protect Clients v23.1.0.dmg" https://vh.venafilab.com/csc/clients/venafi-csc-latest-x86_64.dmg
@@ -25,6 +24,10 @@ jobs:
           sudo hdiutil detach installer
       - name: Sign with xcode
         run: |
-          tkdriverconfig getgrant --authurl=${{ env.TPP_AUTH_URL }} --hsmurl=${{ env.TPP_HSM_URL }} --username=${{ env.TPP_USERNAME }} --password=${{ env.TPP_DEMO_PASSWORD }}
+          # Temporary workaround to ensure driver is loaded
+          open "/Applications/Venafi Code Signing Client.app"
+          tkdriverconfig getgrant --force --authurl=${{ env.TPP_AUTH_URL }} --hsmurl=${{ env.TPP_HSM_URL }} --username=${{ env.TPP_USERNAME }} --password=${{ env.TPP_PASSWORD }}
           tkdriverconfig sync
-          codesign --force -o runtime --sign "${{ env.SIGNING_CERTIFICATE }}" archives.xcarchive/Products/Applications/SampleIOSApp.app
+          tkdriverconfig listobjects
+          # security export-smartcard token
+          codesign -v --force -o runtime --sign "${{ env.SIGNING_CERTIFICATE }}" archives.xcarchive/Products/Applications/SampleIOSApp.app

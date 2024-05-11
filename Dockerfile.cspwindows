@@ -1,5 +1,7 @@
 #FROM mcr.microsoft.com/windows/servercore:ltsc2019
-FROM mcr.microsoft.com/windows/servercore/insider:10.0.17763.107
+#FROM mcr.microsoft.com/windows/servercore/insider:10.0.17763.107
+FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64
+
 # Install Signtool
 ADD ./install-signtool.ps1 /build/
 RUN powershell /build/install-signtool.ps1

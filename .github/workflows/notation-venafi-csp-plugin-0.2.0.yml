@@ -1,11 +1,9 @@
-name: notation-venafi-csp-plugin-summit23
+name: notation-venafi-csp-plugin-0.2.0
 on: workflow_dispatch
 
 env:
     IMAGE: ghcr.io/zosocanuck/net-monitor:v1
-    NOTATION_VERSION: 1.1.0
-    PLUGIN_VERSION: 0.3.0
-    PLUGIN_LINUX_AMD64_SHA256: "03771794643f18c286b6db3a25a4d0b8e7c401e685b1e95a19f03c9356344f5a"
+    PLUGIN_VERSION: v0.2.0-beta
     
 jobs:
   build:
@@ -21,21 +19,17 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - name: Setup notation CLI
-        uses: notaryproject/notation-action/setup@v1
+      - name: Install notation with plugin
+        uses: zosocanuck/notation-venafi-csp-action@main
         with:
-          version: ${{ env.NOTATION_VERSION }}
-      - name: Install Venafi plugin
-        run: |
-          notation plugin install --url https://github.com/Venafi/notation-venafi-csp/releases/download/v${{ env.PLUGIN_VERSION }}/notation-venafi-csp-linux-amd64.tar.gz --sha256sum ${{ env.PLUGIN_LINUX_AMD64_SHA256 }}
-          notation plugin ls
+          notation-venafi-csp-release: ${{ env.PLUGIN_VERSION }}
       - name: Get GitHub OIDC token
         run: |
           AUDIENCE="vsign-image-signer"
           OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
           echo "VSIGN_JWT=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)" >> $GITHUB_ENV
       - name: Create config.ini
-        uses: DamianReeves/write-file-action@v1.3
+        uses: DamianReeves/write-file-action@v1.2
         with:
           path: ${{ github.workspace }}/config.ini
           contents: |
