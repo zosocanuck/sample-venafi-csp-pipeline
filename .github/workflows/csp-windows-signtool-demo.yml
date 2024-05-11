@@ -1,0 +1,13 @@
+name: Signtool demo
+
+on: workflow_dispatch
+
+jobs:
+
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+      - name: Sign application
+        run: signtool sign /fd sha256 /n signer.example.com c:\temp\sample.exe
