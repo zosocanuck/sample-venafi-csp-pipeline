@@ -22,7 +22,7 @@ jobs:
         with:
           path: ${{ github.workspace }}/csp.jwt
           contents: |
-            testing 1 2 3
+            t=${{ env.VSIGN_JWT }}
         #  contents: |
         #    ${{ env.VSIGN_JWT }}
       - name: Authenticate
