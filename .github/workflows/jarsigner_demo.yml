@@ -22,9 +22,9 @@ jobs:
         with:
           path: ${{ github.workspace }}/csp.jwt
           contents: |
-            t=${{ env.VSIGN_JWT }}
-        #  contents: |
-        #    ${{ env.VSIGN_JWT }}
+            ${{ env.VSIGN_JWT }}
+        env:
+          VSIGN_PROJECT: vsign\ztpki-rsa2048
       - name: Authenticate
         run: |
           /opt/venafi/codesign/bin/pkcs11config getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --jwtfile=${{ github.workspace}}/csp.jwt
