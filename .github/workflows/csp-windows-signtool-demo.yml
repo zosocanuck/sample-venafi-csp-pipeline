@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Get GitHub OIDC token
-        shell: pwsh
+        shell: powershell
         run: |
           $AUDIENCE="vsign-image-signer"
           $OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
