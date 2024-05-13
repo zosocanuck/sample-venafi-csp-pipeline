@@ -29,7 +29,9 @@ jobs:
           contents: |
             ${{ env.VSIGN_JWT }}
       - name: configure CSP
+        shell: cmd
         run: |
+          setx /M PATH "${env:PATH};${env:ProgramFiles}\Venafi CodeSign Protect"
           cspconfig getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --jwtfile=${{ github.workspace}}/csp.jwt
       - name: Sign application
         run: signtool sign /fd sha256 /n signer.example.com c:\temp\sample.exe
