@@ -2,6 +2,10 @@ name: Jarsigner demo
 
 on: workflow_dispatch
 
+env:
+    IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image@sha256:521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
+    PLUGIN_VERSION: v0.1.0-beta
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,7 +20,7 @@ jobs:
         run: |
           AUDIENCE="vsign-image-signer"
           OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
-          echo "VSIGN_JWT=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)" >> GITHUB_ENV
+          echo "VSIGN_JWT=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)" >> $GITHUB_ENV
       - name: Create JWT file
         uses: DamianReeves/write-file-action@master
         with:
