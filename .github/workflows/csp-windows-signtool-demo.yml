@@ -24,15 +24,5 @@ jobs:
       - name: configure CSP
         run: |
           cspconfig getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --jwtfile=${{ github.workspace}}/csp.jwt
-     # - name: Get GitHub OIDC token
-     #   shell: powershell
-     #   run: |
-     #     $AUDIENCE="vsign-image-signer"
-     #     $OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
-     #     # Invoke-WebRequest -Uri $OIDC_URL_WITH_AUDIENCE -Method Post -Headers @{ Authorization = 'Bearer ' + $ACTIONS_ID_TOKEN_REQUEST_TOKEN } -UseBasicParsing
-
-          # echo "$GITHUB_JWT=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)" >> $env:GITHUB_ENV
-     #     echo $env:GITHUB_JWT > jwt.txt
-     #     cat jwt.txt
-      # - name: Sign application
-      #  run: signtool sign /fd sha256 /n signer.example.com c:\temp\sample.exe
+      - name: Sign application
+        run: signtool sign /fd sha256 /n signer.example.com c:\temp\sample.exe
