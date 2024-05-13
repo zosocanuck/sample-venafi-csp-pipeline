@@ -2,10 +2,6 @@ name: Jarsigner demo
 
 on: workflow_dispatch
 
-#env:
-#    IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image@sha256:521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
-#    PLUGIN_VERSION: v0.1.0-beta
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,8 +23,6 @@ jobs:
           path: ${{ github.workspace }}/csp.jwt
           contents: |
             ${{ env.VSIGN_JWT }}
-#        env:
-#          VSIGN_PROJECT: vsign\ztpki-rsa2048
       - name: Authenticate
         run: |
           /opt/venafi/codesign/bin/pkcs11config getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --jwtfile=${{ github.workspace}}/csp.jwt
