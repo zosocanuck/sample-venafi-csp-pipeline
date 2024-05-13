@@ -6,10 +6,16 @@ jobs:
 
   build:
     runs-on: self-hosted
+    # runs-on: windows-latest
     permissions: 
       id-token: write
 
     steps:
+      - name: Install Venafi CodeSign Protect client
+        run: |
+          curl -o "VenafiCodeSigningClients-24.1.0-x64.msi" https://vh.venafilab.com/csc/clients/venafi-csc-latest-x86_64.msi
+          start /wait msiexec /qn /i "VenafiCodeSigningClients-24.1.0-x64.msi"
+        if: jobs.build.runs-on == "self-hosted"
       - name: Get OIDC Token
         uses: tremolosecurity/action-generate-oidc-jwt@v1.0
         with:
