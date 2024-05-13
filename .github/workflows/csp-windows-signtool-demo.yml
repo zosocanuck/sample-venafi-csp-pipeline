@@ -5,8 +5,9 @@ on: workflow_dispatch
 jobs:
 
   build:
-
     runs-on: self-hosted
+    permissions: 
+      id-token: write
 
     steps:
       - name: Get GitHub OIDC token
