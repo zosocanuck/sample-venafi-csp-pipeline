@@ -16,7 +16,7 @@ jobs:
         run: |
           AUDIENCE="vsign-image-signer"
           OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
-          echo "$GITHUB_JWT=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)" >> GITHUB_ENV
+          echo "GITHUB_JWT=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" -H "Accept: application/json; api-version=2.0" "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)" >> GITHUB_ENV
       - name: Create JWT file
         uses: DamianReeves/write-file-action@v1.2
         with:
