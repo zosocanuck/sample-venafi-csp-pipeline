@@ -16,7 +16,6 @@ jobs:
         run: |
           curl -o "VenafiCodeSigningClients-24.1.0-x64.msi" https://vh.venafilab.com/csc/clients/venafi-csc-latest-x86_64.msi
           start /wait msiexec /qn /i "VenafiCodeSigningClients-24.1.0-x64.msi"
-          setx /M PATH "${env:PATH};${env:ProgramFiles}\Venafi CodeSign Protect"
       - name: Get OIDC Token
         uses: tremolosecurity/action-generate-oidc-jwt@v1.0
         with:
@@ -31,7 +30,6 @@ jobs:
       - name: configure CSP
         shell: cmd
         run: |
-          setx /M PATH "${env:PATH};${env:ProgramFiles}\Venafi CodeSign Protect"
-          cspconfig getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --jwtfile=${{ github.workspace}}/csp.jwt
+          "C:\Program Files\Venafi CodeSign Protect\cspconfig.exe" getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --jwtfile=${{ github.workspace}}/csp.jwt
       - name: Sign application
         run: signtool sign /fd sha256 /n signer.example.com c:\temp\sample.exe
