@@ -2,24 +2,13 @@ name: Signtool demo
 
 on: workflow_dispatch
 
-# regsvr32 c:\windows\system32\venaficsp.dll
-# "C:\Program Files\Venafi CodeSign Protect\cspconfig.exe" listobjects
-# "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe" sign /fd sha256 /n signer.example.com sample.exe
-
 jobs:
-
   build:
-    # runs-on: self-hosted
-    runs-on: windows-latest
+    runs-on: self-hosted
     permissions: 
       id-token: write
 
     steps:
-      - name: Install Venafi CodeSign Protect client
-        shell: cmd
-        run: |
-          curl -o "VenafiCodeSigningClients-24.1.0-x64.msi" https://vh.venafilab.com/csc/clients/venafi-csc-latest-x86_64.msi
-          start /wait msiexec /qn /i "VenafiCodeSigningClients-24.1.0-x64.msi"
       - name: Get OIDC Token
         uses: tremolosecurity/action-generate-oidc-jwt@v1.0
         with:
@@ -38,6 +27,6 @@ jobs:
       - name: Sign application
         shell: cmd
         run: |
-          curl -o "sample.exe" https://the.earth.li/~sgtatham/putty/latest/w64/putty.exe
-          "C:\Program Files\Venafi CodeSign Protect\cspconfig.exe" sync
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe" sign /fd sha256 /n signer.example.com sample.exe
+
          
