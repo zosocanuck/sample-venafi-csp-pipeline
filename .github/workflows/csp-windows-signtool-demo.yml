@@ -20,6 +20,7 @@ jobs:
           path: ${{ github.workspace }}/csp.jwt
           contents: |
             ${{ env.VSIGN_JWT }}
+          write-mode: overwrite
       - name: configure CSP
         run: |
           cspconfig getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --jwtfile=${{ github.workspace}}/csp.jwt
