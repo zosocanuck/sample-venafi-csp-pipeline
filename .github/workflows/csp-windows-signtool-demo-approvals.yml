@@ -1,0 +1,30 @@
+name: Signtool demo with approvals
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ivantest
+    permissions: 
+      id-token: write
+
+    steps:
+      - name: Get OIDC Token
+        uses: tremolosecurity/action-generate-oidc-jwt@v1.0
+        with:
+          audience: "vsign-image-signer"
+          environmentVariableName: "VSIGN_JWT"
+      - name: Create JWT file
+        uses: DamianReeves/write-file-action@master
+        with:
+          path: ${{ github.workspace }}/csp.jwt
+          contents: |
+            ${{ env.VSIGN_JWT }}
+          write-mode: overwrite
+      - name: configure CSP
+        run: |
+          cspconfig getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --jwtfile=${{ github.workspace}}/csp.jwt
+      - name: Sign application
+        run: signtool sign /fd sha256 /n productionsigner.venafidemo.com c:\temp\sample.exe
+
+         
