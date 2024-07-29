@@ -4,7 +4,8 @@ on:
   
 jobs:
   example:
-    runs-on: self-hosted-ubuntu-ec2
+    # runs-on: self-hosted-ubuntu-ec2
+    runs-on: ubuntu-latest
 
     permissions: {}
 
