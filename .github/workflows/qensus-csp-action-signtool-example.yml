@@ -24,7 +24,7 @@ jobs:
       - name: Check CSPDriver (version)
         run: |
           cspconfig.exe version
-          cspconfig.exe getgrant --username=sample-cs-user --password=${{ secrets.TPP_PASSWORD }} --hsmurl=${{ secrets.TPP_HSM_URL }} --authurl=${{ secrets.TPP_AUTH_URL }}
+          cspconfig.exe getgrant --username=sample-demo-user --password=${{ secrets.TPP_PASSWORD }} --hsmurl=${{ secrets.TPP_HSM_URL }} --authurl=${{ secrets.TPP_AUTH_URL }}
           cspconfig.exe listcertificates
           cspconfig.exe sync
           cspconfig.exe listcertificates
@@ -62,7 +62,7 @@ jobs:
         env:
           TPP_AUTH_URL: ${{ secrets.TPP_AUTH_URL }}
           TPP_HSM_URL: ${{ secrets.TPP_HSM_URL }}
-          TPP_USERNAME: sample-cs-user
+          TPP_USERNAME: sample-demo-user
           TPP_PASSWORD: ${{ secrets.TPP_PASSWORD }}
           INPUT_PATH: foo.exe
           CERTIFICATE_SUBJECT_NAME: signer.example.com
@@ -73,6 +73,6 @@ jobs:
         env:
           TPP_AUTH_URL: ${{ secrets.TPP_AUTH_URL }}
           TPP_HSM_URL: ${{ secrets.TPP_HSM_URL }}
-          TPP_USERNAME: sample-cs-user
+          TPP_USERNAME: sample-demo-user
           TPP_PASSWORD: ${{ secrets.TPP_PASSWORD }}
           INPUT_PATH: foo.exe
