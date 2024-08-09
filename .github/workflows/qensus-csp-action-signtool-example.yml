@@ -5,7 +5,7 @@ on:
 
 jobs:
   example_job:
-    runs-on: windows-latest
+    runs-on: self-hosted
     name: Example with self-hosted Windows runner
     steps:
       - name: Setup CSPDriver
