@@ -65,7 +65,7 @@ jobs:
           TPP_USERNAME: sample-demo-user
           TPP_PASSWORD: ${{ secrets.TPP_PASSWORD }}
           INPUT_PATH: foo.exe
-          CERTIFICATE_SUBJECT_NAME: signer.example.com
+          CERTIFICATE_SUBJECT_NAME: sctest2.example.com
           TIMESTAMPING_SERVERS: http://timestamp.digicert.com
       - name: Verify artifact with signtool
         shell: cmd
