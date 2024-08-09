@@ -15,7 +15,7 @@ jobs:
           tpp-csc-url: 'https://vh.venafilab.com/csc'
           tpp-auth-url: 'https://vh.venafilab.com/vedauth'
           tpp-hsm-url: 'https://vh.venafilab.com/vedhsm'
-          include-config: 'true'
+          include-config: 'false'
       - name: Display output values
         run: |
           echo "Output \"csp-driver-cached-config\" [${{steps.cspdriver.outputs.csp-driver-cached-config}}]"
