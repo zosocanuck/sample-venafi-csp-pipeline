@@ -56,3 +56,13 @@ jobs:
           INPUT_PATH: foo.exe
           CERTIFICATE_SUBJECT_NAME: sctest2.example.com
           TIMESTAMPING_SERVERS: http://timestamp.digicert.com
+      - name: Verify artifact with signtool
+        shell: cmd
+        run: python -mvenafi_csp.signtool_verify_command
+        env:
+          TPP_AUTH_URL: ${{ secrets.TPP_AUTH_URL }}
+          TPP_HSM_URL: ${{ secrets.TPP_HSM_URL }}
+          TPP_USERNAME: sample-demo-user
+          TPP_PASSWORD: ${{ secrets.TPP_PASSWORD }}
+          TRUSTED_CHAIN_LABEL: PowerShell-Script-Signing-Internal
+          INPUT_PATH: foo.exe
