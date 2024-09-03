@@ -12,9 +12,9 @@ jobs:
         id: cspdriver
         uses: qensus-labs/venafi-codesigning-wrapper-action@v0.9.1
         with:
-          tpp-csc-url: 'https://vh.venafilab.com/csc'
-          tpp-auth-url: 'https://vh.venafilab.com/vedauth'
-          tpp-hsm-url: 'https://vh.venafilab.com/vedhsm'
+          venafi-csc-url: 'https://vh.venafilab.com/csc'
+          venafi-auth-url: 'https://vh.venafilab.com/vedauth'
+          venafi-hsm-url: 'https://vh.venafilab.com/vedhsm'
           include-config: 'false'
       - name: Display output values
         run: |
