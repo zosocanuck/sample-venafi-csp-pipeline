@@ -30,3 +30,7 @@ jobs:
         uses: actions/attest-build-provenance@v1
         with:
           subject-path: '${{ github.workspace }}/downloads'
+      - name: SBOM generation
+        uses: anchore/sbom-action@v0
+        with:
+          path: '${{ github.workspace }}/downloads'
