@@ -6,6 +6,8 @@ jobs:
 
   archive-build-artifacts:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - name: Step 1 - Create a temporary artifact downloads folder
         run: mkdir downloads
