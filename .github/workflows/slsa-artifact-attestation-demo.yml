@@ -28,8 +28,11 @@ jobs:
           contents: |
             ${{ env.VSIGN_JWT }}
           write-mode: overwrite
-      - name: Display JWT
-        run: cat ${{ github.workspace }}/csp.jwt
+      - name: upload jwt
+        uses: actions/upload-artifact@v4
+        with: 
+            name: my-file
+            path: ${{ github.workspace }}/csp.jwt
       - name: configure CSP
         run: |
           pkcs11config getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --jwtfile=${{ github.workspace}}/csp.jwt    
