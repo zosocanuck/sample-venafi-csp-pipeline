@@ -41,3 +41,8 @@ jobs:
       - name: Sign SBOM with cosign and Venafi CSP
         run: |
           cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=vsign-ztpki-rsa2048?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" --new-bundle-format --bundle net-monitor-cosign-bundle ~/net-monitor.spdx
+      - name: Upload Signed SBOM 
+        uses: actions/upload-artifact@v4
+        with: 
+          name: signed-sbom
+          path: net-monitor-cosign-bundle
