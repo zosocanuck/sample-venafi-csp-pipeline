@@ -21,6 +21,15 @@ jobs:
         with:
           audience: "vsign-image-signer"
           environmentVariableName: "VSIGN_JWT"
+      - name: Checkout actions-oidc-debugger
+        uses: actions/checkout@v3
+        with:
+          repository: github/actions-oidc-debugger
+          path: ./.github/actions/actions-oidc-debugger
+      - name: Debug OIDC Claims
+        uses: ./.github/actions/actions-oidc-debugger
+        with:
+          audience: '${{ github.server_url }}/${{ github.repository_owner }}'
       - name: Create JWT file
         uses: DamianReeves/write-file-action@master
         with:
