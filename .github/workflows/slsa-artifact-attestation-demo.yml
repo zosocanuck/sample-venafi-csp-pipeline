@@ -10,6 +10,8 @@ jobs:
       id-token: write
       attestations: write
     steps:
+      - name: install dependencies
+        run: apt-get install --no-install-recommends -y libpcsclite-dev
       - name: Step 1 - Create a temporary artifact downloads folder
         run: mkdir downloads
         
