@@ -12,4 +12,4 @@ jobs:
         run: |
           curl -o "VenafiCodeSigningClients-24.3.0-x64.msi" https://vh.venafilab.com/csc/clients/venafi-csc-latest-x86_64.msi
           start /wait msiexec /qn /i "VenafiCodeSigningClients-24.3.0-x64.msi"
-          "c:\program files\venafi\codesign protect\cspconfig.exe" version
+          "c:\program files\venafi codesign protect\cspconfig.exe" version
