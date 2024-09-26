@@ -16,31 +16,17 @@ jobs:
         run: |
           curl -o "venafi-codesigningclients-24.3.0-linux-x86_64.deb" https://vh.venafilab.com/csc/clients/venafi-csc-latest-x86_64.deb
           sudo dpkg -i "venafi-codesigningclients-24.3.0-linux-x86_64.deb"
-      #- name: Get OIDC Token
-      #  uses: tremolosecurity/action-generate-oidc-jwt@v1.0
-      #  with:
-      #    audience: "vsign-image-signer"
-      #   environmentVariableName: "VSIGN_JWT"
-      - name: get oidc token
-        run: |
-          OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=vsign-image-signer" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
-          JWT=$(echo $OIDC_TOKEN | jq -j '.value')
-          echo "JWT=$JWT" >> $GITHUB_ENV
-      - name: Checkout actions-oidc-debugger
-        uses: actions/checkout@v3
+      - name: Get OIDC Token
+        uses: tremolosecurity/action-generate-oidc-jwt@v1.0
         with:
-          repository: github/actions-oidc-debugger
-          path: ./.github/actions/actions-oidc-debugger
-      - name: Debug OIDC Claims
-        uses: ./.github/actions/actions-oidc-debugger
-        with:
-          audience: '${{ github.server_url }}/${{ github.repository_owner }}'
+          audience: "vsign-image-signer"
+          environmentVariableName: "VSIGN_JWT"
       - name: Create JWT file
         uses: DamianReeves/write-file-action@master
         with:
           path: ${{ github.workspace }}/csp.jwt
           contents: |
-            ${{ env.JWT }}
+            ${{ env.VSIGN_JWT }}
           write-mode: overwrite
       - name: upload jwt
         uses: actions/upload-artifact@v4
@@ -72,6 +58,7 @@ jobs:
         uses: anchore/sbom-action@v0
         with:
           path: '${{ github.workspace }}/downloads'
+          output-file: '${{ github.workspace }}/downloads'
       - name: Install Cosign
         run: |
           wget https://github.com/sigstore/cosign/releases/download/v2.4.0/cosign-linux-pivkey-pkcs11key-amd64 -O cosign 
