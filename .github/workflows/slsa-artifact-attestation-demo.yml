@@ -58,14 +58,14 @@ jobs:
         uses: anchore/sbom-action@v0
         with:
           path: '${{ github.workspace }}/downloads'
-          output-file: '${{ github.workspace }}/downloads'
+          output-file: '${{ github.workspace }}/downloads/sbom.spdx'
       - name: Install Cosign
         run: |
           wget https://github.com/sigstore/cosign/releases/download/v2.4.0/cosign-linux-pivkey-pkcs11key-amd64 -O cosign 
           chmod +x cosign
       - name: Sign SBOM with cosign and Venafi CSP
         run: |
-          ./cosign sign-blob --tlog-upload=false --key "pkcs11:slot-id=0;object=vsign-ztpki-rsa2048?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" --new-bundle-format --bundle cosign-sbom-bundle ${{ github.workspace }}/downloads/sample-venafi-csp-pipeline-archive-build-artifacts.spdx.json
+          ./cosign sign-blob --tlog-upload=false --key "pkcs11:slot-id=0;object=vsign-ztpki-rsa2048?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" --new-bundle-format --bundle cosign-sbom-bundle ${{ github.workspace }}/downloads/sbom.spdx
       - name: Upload Signed SBOM 
         uses: actions/upload-artifact@v4
         with: 
