@@ -55,6 +55,6 @@ jobs:
         run: notation plugin install --url https://github.com/Venafi/notation-venafi-csp/releases/download/v0.3.0/notation-venafi-csp-linux-amd64.tar.gz --sha256sum 03771794643f18c286b6db3a25a4d0b8e7c401e685b1e95a19f03c9356344f5a
       - name: Sign with notation
         run: |
-          notation key add vsign- --plugin venafi-csp --id vsign-ztpki-rsa2048 --plugin-config "config"="${{ github.workspace }}/config.ini"
+          notation key add vsign-ztpki-rsa2048 --plugin venafi-csp --id vsign-ztpki-rsa2048 --plugin-config "config"="${{ github.workspace }}/config.ini"
           echo "JWS envelope test"
           notation sign -k vsign-ztpki-rsa2048 ${{ env.REGISTRY }}/net-monitor:v1
