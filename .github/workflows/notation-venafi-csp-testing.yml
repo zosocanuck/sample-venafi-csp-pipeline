@@ -1,0 +1,60 @@
+name: notation-venafi-csp-testing
+# Run on every push, and allow it to be run manually.
+on:
+  workflow_dispatch:
+
+env:
+  REGISTRY: localhost:5000
+  NOTATION_VERSION: 1.2.0
+
+jobs:
+  docker-registry-v2-tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+   
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v3.1.0
+      - uses: actions/setup-go@v3.3.0
+        with:
+          go-version: '1.22'
+          check-latest: true
+      - name: docker registry v2
+        run: |
+          docker run -d -p 5000:5000 --name registry registry:2
+          docker build -t ${{ env.REGISTRY }}/net-monitor:v1 https://github.com/wabbit-networks/net-monitor.git#main
+          docker build -t ${{ env.REGISTRY}}/sample-venafi-csp-image:signed https://github.com/zosocanuck/sample-venafi-csp-pipeline.git#main
+          docker image push ${{ env.REGISTRY }}/net-monitor:v1
+          docker image push ${{ env.REGISTRY }}/sample-venafi-csp-image:signed
+      - name: Get OIDC Token
+        uses: tremolosecurity/action-generate-oidc-jwt@v1.0
+        with:
+          audience: "vsign-image-signer"
+          environmentVariableName: "VSIGN_JWT"
+      - name: Create JWT file
+        uses: DamianReeves/write-file-action@master
+        with:
+          path: ${{ github.workspace }}/csp.jwt
+          contents: |
+            ${{ env.VSIGN_JWT }}
+          write-mode: overwrite
+      - name: Create config.ini
+        uses: DamianReeves/write-file-action@v1.2
+        with:
+          path: ${{ github.workspace }}/config.ini
+          contents: |
+            tpp_url=https://vh.venafilab.com
+            vsign_jwt=${{ env.VSIGN_JWT }}
+            tpp_project=vsign\ztpki-rsa2048
+      - name: setup Notation CLI
+        uses: notaryproject/notation-action/setup@v1
+      - name: install venafi csp plugin
+        run: notation plugin install --url https://github.com/Venafi/notation-venafi-csp/releases/download/v0.3.0/notation-venafi-csp-linux-amd64.tar.gz --sha256sum 03771794643f18c286b6db3a25a4d0b8e7c401e685b1e95a19f03c9356344f5a
+      - name: Sign with notation
+        run: |
+          notation key add vsign- --plugin venafi-csp --id vsign-ztpki-rsa2048 --plugin-config "config"="${{ github.workspace }}/config.ini"
+          echo "JWS envelope test"
+          notation sign -k vsign-ztpki-rsa2048 ${{ env.REGISTRY }}/net-monitor:v1
