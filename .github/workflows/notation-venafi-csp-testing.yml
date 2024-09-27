@@ -47,7 +47,7 @@ jobs:
           path: ${{ github.workspace }}/config.ini
           contents: |
             tpp_url=https://vh.venafilab.com
-            vsign_jwt=${{ env.VSIGN_JWT }}
+            jwt=${{ env.VSIGN_JWT }}
             tpp_project=vsign\ztpki-rsa2048
       - name: setup Notation CLI
         uses: notaryproject/notation-action/setup@v1
