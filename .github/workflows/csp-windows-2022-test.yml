@@ -11,4 +11,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile.cspwindows2022 --tag zosocanuck/csp-test
+      run: docker build . --file Dockerfile.cspwindows2022 --tag ghcr.io/zosocanuck/venafi-csp-windows
