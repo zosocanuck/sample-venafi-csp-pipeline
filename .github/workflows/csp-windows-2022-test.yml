@@ -10,16 +10,8 @@ jobs:
       id-token: write
     runs-on: windows-latest
     steps:
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
     - uses: actions/checkout@v4
-    #- name: Build the Docker image
-    #  run: docker build . --file Dockerfile.cspwindows2022 --tag ghcr.io/zosocanuck/venafi-csp-windows
-    - name: Build and push Docker image
-      id: push
-      uses: docker/build-push-action@v6
-      with:
-        context: .
-        file: ./Dockerfile
-        push: true
-        tags: ghcr.io/zosocanuck/venafi-csp-windows
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile.cspwindows2022 --tag ghcr.io/zosocanuck/venafi-csp-windows
+    - name: Push Docker image
+      run: docker push ghcr.io/zosocanuck/venafi-csp-windows
