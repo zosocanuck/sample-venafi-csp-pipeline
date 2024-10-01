@@ -3,12 +3,19 @@ name: Windows 2022 test
 on: workflow_dispatch
 
 jobs:
-
   build:
-
+    permissions:
+      packages: write
     runs-on: windows-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile.cspwindows2022 --tag ghcr.io/zosocanuck/venafi-csp-windows
+    - uses: actions/checkout@v4
+    #- name: Build the Docker image
+    #  run: docker build . --file Dockerfile.cspwindows2022 --tag ghcr.io/zosocanuck/venafi-csp-windows
+    - name: Build and push Docker image
+      id: push
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ghcr.io/zosocanuck/venafi-csp-windows
