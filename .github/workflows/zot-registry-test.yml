@@ -6,14 +6,10 @@ env:
   REGISTRY: localhost:5001
 jobs:
   docker-registry-v2-tests:
-    # Skip if running in a fork that might not have secrets configured.
-    if: ${{ github.repository == 'venafi/sigscan' }}
     name: Run tests
     runs-on: ubuntu-latest
-   
     permissions:
       contents: read
-
     steps:
       - name: Run zot and publish test image
         run: |
