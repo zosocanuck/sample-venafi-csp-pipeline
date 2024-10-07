@@ -13,5 +13,5 @@ jobs:
     steps:
       - name: Run zot and publish test image
         run: |
-          docker run -d -p 5001:5000 --name zotregistry ghcr.io/project-zot/zot-linux-amd64:latest
+          docker run -d -p 5001:5000 --name zotregistry ghcr.io/project-zot/zot-linux-amd64:v2.1.1
           skopeo --insecure-policy copy --dest-tls-verify=false --src-tls-verify=false --format=oci docker://docker.io/alpine:latest docker://${{ env.REGISTRY }}/alpine:signed
