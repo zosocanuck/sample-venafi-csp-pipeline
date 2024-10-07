@@ -1,8 +1,7 @@
 
 name: Zot registry tests
 # Run on every push, and allow it to be run manually.
-on:
-  workflow_dispatch:
+on: workflow_dispatch
 env:
   REGISTRY: localhost:5001
 jobs:
