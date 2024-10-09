@@ -27,7 +27,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Create Sectigo TSA chain file
-        uses: DamianReeves/write-file-action@master
+        uses: DamianReeves/write-file-action@v1.2
         with:
           path: ${{ github.workspace }}/sectigotsachain.crt
           contents: |
