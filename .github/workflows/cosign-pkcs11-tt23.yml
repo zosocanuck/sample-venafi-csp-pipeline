@@ -30,6 +30,7 @@ jobs:
         run: |
           pkcs11config getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
           cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=none" ${{ env.IMAGE }}
+          # cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=none" --timestamp-server-url https://vh.venafilab.com/timestamp ${{ env.IMAGE }}
       - name: Verify with cosign
         run: |
           cosign verify --insecure-ignore-tlog --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.IMAGE }}
