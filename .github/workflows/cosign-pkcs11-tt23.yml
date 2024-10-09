@@ -29,24 +29,16 @@ jobs:
       - name: Create Sectigo TSA chain file
         uses: DamianReeves/write-file-action@v1.2
         with:
-          path: ${{ github.workspace }}/sectigotsachain.crt
+          path: chain.crt
           contents: |
             ${{ secrets.SECTIGO_TSA_CHAIN }}
           write-mode: overwrite
-      - name: Create testfile
-        uses: DamianReeves/write-file-action@v1.2
-        with:
-          path: test.txt
-          contents: |
-            Hello, world
-          write-mode: overwrite
       - name: Sign with cosign
         run: |
-          cat test.txt
           pkcs11config getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
           # cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=none" ${{ env.IMAGE }}
           cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=none" --timestamp-server-url http://timestamp.sectigo.com ${{ env.IMAGE }}
       - name: Verify with cosign
         run: |
-          cosign verify --insecure-ignore-tlog --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" --timestamp-certificate-chain ${{ github.workspace }}/sectigotsachain.crt ${{ env.IMAGE }}
+          cosign verify --insecure-ignore-tlog --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" --timestamp-certificate-chain chain.crt ${{ env.IMAGE }}
           cosign tree ${{ env.IMAGE }}
