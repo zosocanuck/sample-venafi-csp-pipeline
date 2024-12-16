@@ -11,7 +11,7 @@ jobs:
       - name: Install vcert
         run: |
           curl -o "vcert.zip" https://github.com/Venafi/vcert/releases/download/v5.7.2/vcert_v5.7.2_linux.zip
-          unzip ./vcert.zip
+          unzip "vcert.zip"
       - name: Get OIDC Token
         uses: tremolosecurity/action-generate-oidc-jwt@v1.0
         with:
