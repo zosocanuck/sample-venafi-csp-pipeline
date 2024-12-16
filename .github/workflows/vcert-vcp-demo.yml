@@ -20,7 +20,7 @@ jobs:
       - name: Exchange GitHub token for VCP token
         run: |
           ./vcert -v
-          ./vcert getcred vcp --verbose --token-url https://api.venafi.cloud/v1/oauth2/v2.0/891e1f21-dc80-11ec-a787-89187550eb51/token --external-jwt "${{ env.GITHUB_JWT }}" --format json | tee /tmp/token
+          ./vcert getcred -p vcp --verbose --token-url https://api.venafi.cloud/v1/oauth2/v2.0/891e1f21-dc80-11ec-a787-89187550eb51/token --external-jwt "${{ env.GITHUB_JWT }}" --format json | tee /tmp/token
           cat /tmp/token
           echo "VCP_TOKEN=$(cat /tmp/token | jq -r .access_token)" >> GITHUB_ENV 
           ./vcert enroll --platform TLSPC -t ${{ env.VCP_TOKEN }} --cn iwallis-dec162024-azure.svc.cluster.local -z "SKI-Apps\\venafi-builtin" --csr service --no-prompt
