@@ -1,0 +1,26 @@
+name: vcert-vcp-demo
+
+on: workflow_dispatch
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Install vcert
+        run: |
+          curl -o "vcert.zip" https://github.com/Venafi/vcert/releases/download/v5.7.2/vcert_v5.7.2_linux.zip
+          unzip vcert.zip
+      - name: Get OIDC Token
+        uses: tremolosecurity/action-generate-oidc-jwt@v1.0
+        with:
+          audience: "vcert-vcp-demo"
+          environmentVariableName: "GITHUB_JWT"
+      - name: Exchange GitHub token for VCP token
+        run: |
+          ./vcert -v
+          ./vcert getcred vcp --token-url https://api.venafi.cloud/v1/oauth2/v2.0/891e1f21-dc80-11ec-a787-89187550eb51/token --external-jwt "$GITHUB_JWT" --format json | tee /tmp/token
+          VCP_TOKEN=$(cat /tmp/token | jq -r .access_token)
+          ./vcert enroll --platform TLSPC -t $VCP_TOKEN --cn iwallis-dec162024-azure.svc.cluster.local -z "SKI-Apps\\venafi-builtin" --csr service --no-prompt
+    
