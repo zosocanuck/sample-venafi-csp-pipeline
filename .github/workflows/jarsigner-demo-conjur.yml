@@ -17,7 +17,7 @@ jobs:
         uses: cyberark/conjur-action@v2.0.2
         with:
           url: https://cybr-secrets.secretsmgr.cyberark.cloud/api
-          account: conjur
+          account: ivan_wallis@cyberark.cloud.3357
           authn_id: authn-jwt/github_csp
           secrets: Application-DummyPlatform-test-sample-cs-user/username;Application-DummyPlatform-test-sample-cs-user/password
       - name: Authenticate
