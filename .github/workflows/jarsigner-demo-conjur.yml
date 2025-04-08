@@ -20,10 +20,10 @@ jobs:
       - name: Import Secrets using CyberArk Conjur Secret Fetcher
         uses: cyberark/conjur-action@v2.0.6
         with:
-          url: https://cybr-secrets.secretsmgr.cyberark.cloud
-          account: ivan_wallis@cyberark.cloud.3357
-          #account: conjur
-          authn_id: authn-jwt/github_csp
+          url: https://cybr-secrets.secretsmgr.cyberark.cloud/api
+          #account: ivan_wallis@cyberark.cloud.3357
+          account: conjur
+          authn_id: github_csp
           secrets: data/vault/iwallis-safe/Application-DummyPlatform-test-sample-cs-user/username|USERNAME;data/vault/iwallis-safe/Application-DummyPlatform-test-sample-cs-user/password|PASSWORD
       - name: Sleep for 30 seconds
         uses: jakejarvis/wait-action@master
