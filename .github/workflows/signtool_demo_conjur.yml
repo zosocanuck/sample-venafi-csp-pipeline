@@ -1,0 +1,23 @@
+name: Signtool demo with Conjur
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: cspclient
+    permissions: 
+      id-token: write
+      contents: read
+    steps:
+      - name: Import Secrets using CyberArk Conjur Secret Fetcher
+        uses: cyberark/conjur-action@v2.0.2
+        with:
+          url: https://cybr-secrets.secretsmgr.cyberark.cloud/api
+          account: conjur
+          authn_id: authn-jwt/github_csp
+          secrets: Application-DummyPlatform-test-sample-cs-user/username;Application-DummyPlatform-test-sample-cs-user/password
+      - name: configure CSP
+        run: |
+          cspconfig getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --jwtfile=${{ github.workspace}}/csp.jwt
+      - name: Sign application
+        run: signtool sign /fd sha256 /n signer.example.com c:\temp\sample.exe
