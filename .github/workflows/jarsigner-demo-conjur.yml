@@ -13,6 +13,10 @@ jobs:
         run: |
           curl -o "venafi-codesigningclients-24.3.0-linux-x86_64.deb" https://vh.venafilab.com/csc/clients/venafi-csc-latest-x86_64.deb
           sudo dpkg -i "venafi-codesigningclients-24.3.0-linux-x86_64.deb"
+      - name: Sleep for 30 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '10s'
       - name: Import Secrets using CyberArk Conjur Secret Fetcher
         uses: cyberark/conjur-action@v2.0.6
         with:
