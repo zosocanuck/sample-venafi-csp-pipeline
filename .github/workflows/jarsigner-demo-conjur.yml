@@ -1,4 +1,4 @@
-name: Jarsigner demo with Conjur
+name: csp_demo_github
 
 on: workflow_dispatch
 
