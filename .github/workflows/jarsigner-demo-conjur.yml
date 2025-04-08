@@ -14,12 +14,12 @@ jobs:
           curl -o "venafi-codesigningclients-24.3.0-linux-x86_64.deb" https://vh.venafilab.com/csc/clients/venafi-csc-latest-x86_64.deb
           sudo dpkg -i "venafi-codesigningclients-24.3.0-linux-x86_64.deb"
       - name: Import Secrets using CyberArk Conjur Secret Fetcher
-        uses: cyberark/conjur-action@v2.0.2
+        uses: cyberark/conjur-action@v2.0.6
         with:
           url: https://cybr-secrets.secretsmgr.cyberark.cloud
           account: ivan_wallis@cyberark.cloud.3357
           authn_id: authn-jwt/github_csp
-          secrets: Application-DummyPlatform-test-sample-cs-user/username;Application-DummyPlatform-test-sample-cs-user/password
+          secrets: data/vault/iwallis-safe/Application-DummyPlatform-test-sample-cs-user/username|USERNAME;data/vault/iwallis-safe/Application-DummyPlatform-test-sample-cs-user/password|PASSWORD
       - name: Authenticate
         run: |
           /opt/venafi/codesign/bin/pkcs11config getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --username=${{ env.USERNAME}} --password=${{ env.PASSWORD }}
