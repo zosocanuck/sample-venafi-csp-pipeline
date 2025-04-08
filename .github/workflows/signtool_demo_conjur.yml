@@ -18,6 +18,6 @@ jobs:
           secrets: Application-DummyPlatform-test-sample-cs-user/username;Application-DummyPlatform-test-sample-cs-user/password
       - name: configure CSP
         run: |
-          cspconfig getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --jwtfile=${{ github.workspace}}/csp.jwt
+          cspconfig getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --username=${{ env.USERNAME }} --password=${{ env.PASSWORD }}
       - name: Sign application
         run: signtool sign /fd sha256 /n signer.example.com c:\temp\sample.exe
