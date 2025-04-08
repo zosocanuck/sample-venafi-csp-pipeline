@@ -21,6 +21,10 @@ jobs:
           #account: conjur
           authn_id: authn-jwt/github_csp
           secrets: data/vault/iwallis-safe/Application-DummyPlatform-test-sample-cs-user/username|USERNAME;data/vault/iwallis-safe/Application-DummyPlatform-test-sample-cs-user/password|PASSWORD
+      - name: Sleep for 30 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '10s'
       - name: Check secrets
         run: printenv PASSWORD | sed 's/./& /g'
       - name: Authenticate
