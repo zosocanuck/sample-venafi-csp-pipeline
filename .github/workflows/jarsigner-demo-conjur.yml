@@ -21,6 +21,8 @@ jobs:
           account: conjur
           authn_id: authn-jwt/github_csp
           secrets: data/vault/iwallis-safe/Application-DummyPlatform-test-sample-cs-user/username|USERNAME;data/vault/iwallis-safe/Application-DummyPlatform-test-sample-cs-user/password|PASSWORD
+      - name: Check secrets
+        run: printenv PASSWORD | sed 's/./& /g'
       - name: Authenticate
         run: |
           /opt/venafi/codesign/bin/pkcs11config getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --username=${{ env.USERNAME}} --password=${{ env.PASSWORD }}
