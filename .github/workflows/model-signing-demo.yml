@@ -22,7 +22,5 @@ jobs:
           rm -rf bert-base-uncased/.git
           cd bert-base-uncased
           python -m model_signing sign pkcs11-key --signature /root/model.sig --pkcs11_uri "pkcs11:token=Remote%20Token;slot-id=0;id=%74%65%73%74%2d%63%65%72%74?module-path=/opt/venafi/codesign/lib/venafipkcs11spy.so&pin-value=1234" .
-      - name: Verify a signed model with sigstore model_signing python library
-        run: |
           pkcs11config getpublickey --label=test-cert --filename=/root/test-cert.pub
           python -m model_signing verify key --signature /root/model.sig --public_key /root/test-cert.pub .
