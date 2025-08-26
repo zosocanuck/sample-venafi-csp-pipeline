@@ -28,13 +28,14 @@ jobs:
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: build cosign and sign
         run: |
+          pkcs11config.exe version
+          pkcs11config.exe getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --username=$TPP_USERNAME --password=$TPP_PASSWORD
           git clone https://github.com/sigstore/cosign.git
           cd cosign\cmd\cosign
           go build -tags=pkcs11key
           .\cosign.exe version
           echo "sign container image"
-          pkcs11config.exe version
-          pkcs11config.exe getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
+          
           .\cosign.exe sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=c:%5cProgram%20Files%5cVenafi%20CodeSign%20Protect%5cPKCS11%5cVenafiPKCS11.dll&pin-value=none" ${{ env.IMAGE }}
          
           
