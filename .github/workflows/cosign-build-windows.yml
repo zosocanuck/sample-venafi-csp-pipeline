@@ -19,6 +19,7 @@ jobs:
           venafi-csc-url: 'https://vh.venafilab.com/csc'
           venafi-auth-url: 'https://vh.venafilab.com/vedauth'
           venafi-hsm-url: 'https://vh.venafilab.com/vedhsm'
+          include-config: 'true'
       - name: Login to Github
         uses: docker/login-action@v2
         with:
