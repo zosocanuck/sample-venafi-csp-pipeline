@@ -1,14 +1,33 @@
 name: cosign-windows-build
 on: workflow_dispatch
 
+env:
+  CERTIFICATE_LABEL: vsign-ztpki-rsa2048
+  TPP_AUTH_URL: ${{ secrets.TPP_AUTH_URL }}
+  TPP_HSM_URL: ${{ secrets.TPP_HSM_URL }}
+  TPP_USERNAME: sample-cs-user
+  TPP_PASSWORD: ${{ secrets.TPP_PASSWORD }}
+  IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image@sha256:521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
-      - name: build cosign
+      - name: Login to Github
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: build cosign and sign
         run: |
           git clone https://github.com/sigstore/cosign.git
           cd cosign\cmd\cosign
           go build -tags=pkcs11key
+          .\cosign.exe version
+          echo "sign container image"
+          pkcs11config getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
+          .\cosign.exe sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=c:%5cProgram%20Files%5cVenafi%20CodeSign%20Protect%5cPKCS11%5cVenafiPKCS11.dll&pin-value=none" ${{ env.IMAGE }}
+         
           
           
