@@ -13,10 +13,8 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - name: install csm client
-        run: |
-          curl -o "VenafiCodeSigningClients-25.1.0-x64.msi" https://vh.venafilab.com/csc/clients/venafi-csc-latest-x86_64.msi
-          start /wait msiexec /qn /i "VenafiCodeSigningClients-25.1.0-x64.msi"
+      - name: Setup Venafi CSP Driver
+        uses: qensus-labs/setup-venafi-csp@v1.0.0
       - name: Login to Github
         uses: docker/login-action@v2
         with:
@@ -30,7 +28,8 @@ jobs:
           go build -tags=pkcs11key
           .\cosign.exe version
           echo "sign container image"
-          "C:\Program Files\Venafi CodeSign Protect\pkcs11config.exe" getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
+          pkcs11config.exe version
+          pkcs11config.exe getgrant --force --authurl=$TPP_AUTH_URL --hsmurl=$TPP_HSM_URL --username=$TPP_USERNAME --password=$TPP_PASSWORD
           .\cosign.exe sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=c:%5cProgram%20Files%5cVenafi%20CodeSign%20Protect%5cPKCS11%5cVenafiPKCS11.dll&pin-value=none" ${{ env.IMAGE }}
          
           
