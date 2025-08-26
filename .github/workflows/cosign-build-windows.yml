@@ -1,0 +1,14 @@
+name: cosign-windows-build
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: build cosign
+        run: |
+          git clone https://github.com/sigstore/cosign.git
+          cd cosign\cmd\cosign
+          go build -tags=pkcs11key
+          
+          
