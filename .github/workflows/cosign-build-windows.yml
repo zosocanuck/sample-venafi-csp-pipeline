@@ -29,7 +29,7 @@ jobs:
       - name: build cosign and sign
         run: |
           pkcs11config.exe version
-          pkcs11config.exe getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --username=$TPP_USERNAME --password=$TPP_PASSWORD
+          pkcs11config.exe getgrant --force --authurl=${{ env.TPP_AUTH_URL }} --hsmurl=${{ env.TPP_HSM_URL }} --username=${{ env.TPP_USERNAME }} --password=${{ env.TPP_PASSWORD }}
           git clone https://github.com/sigstore/cosign.git
           cd cosign\cmd\cosign
           go build -tags=pkcs11key
