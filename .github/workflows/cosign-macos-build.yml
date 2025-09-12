@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - name: Setup Venafi CSP Driver
         run: |
@@ -20,6 +20,8 @@ jobs:
           sudo hdiutil attach "Venafi CodeSign Protect Clients v25.1.0-universal.dmg" -noautoopen -mountpoint installer/
           sudo installer -pkg "installer/Venafi CodeSign Protect Clients.pkg/" -target /
           sudo hdiutil detach installer
+      - name: Install docker for macos
+        uses: douglascamata/setup-docker-macos-action@v1.0.0
       - name: Login to Github
         uses: docker/login-action@v2
         with:
