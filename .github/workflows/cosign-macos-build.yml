@@ -39,7 +39,7 @@ jobs:
           git clone https://github.com/sigstore/cosign.git
           cd cosign/cmd/cosign
           go build -tags=pkcs11key
-          .\cosign.exe version
+          ./cosign.exe version
           echo "sign container image"
-          .\cosign.exe sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/Library/Venafi/CodeSigning/lib/venafipkcs11.so&pin-value=none" ${{ env.IMAGE }}
+          ./cosign.exe sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/Library/Venafi/CodeSigning/lib/venafipkcs11.so&pin-value=none" ${{ env.IMAGE }}
          
