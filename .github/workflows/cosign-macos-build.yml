@@ -33,7 +33,7 @@ jobs:
           pkcs11config version
           pkcs11config getgrant --force --authurl=${{ env.TPP_AUTH_URL }} --hsmurl=${{ env.TPP_HSM_URL }} --username=${{ env.TPP_USERNAME }} --password=${{ env.TPP_PASSWORD }}
           git clone https://github.com/sigstore/cosign.git
-          cd cosign\cmd\cosign
+          cd cosign/cmd/cosign
           go build -tags=pkcs11key
           .\cosign.exe version
           echo "sign container image"
