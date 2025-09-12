@@ -1,0 +1,39 @@
+name: cosign-macos-build
+on: workflow_dispatch
+
+env:
+  CERTIFICATE_LABEL: vsign-ztpki-rsa2048
+  TPP_AUTH_URL: ${{ secrets.TPP_AUTH_URL }}
+  TPP_HSM_URL: ${{ secrets.TPP_HSM_URL }}
+  TPP_USERNAME: sample-cs-user
+  TPP_PASSWORD: ${{ secrets.TPP_PASSWORD }}
+  IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image@sha256:521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Setup Venafi CSP Driver
+        run: |
+          curl -o "Venafi CodeSign Protect Clients v25.1.0-universal.dmg" https://vh.venafilab.com/csc/clients/venafi-csc-latest-universal.dmg
+          mkdir -p installer
+          sudo hdiutil attach "Venafi CodeSign Protect Clients v25.1.0-universal.dmg" -noautoopen -mountpoint installer/
+          sudo installer -pkg "installer/Venafi CodeSign Protect Clients.pkg/" -target /
+          sudo hdiutil detach installer
+      - name: Login to Github
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: build cosign and sign
+        run: |
+          pkcs11config version
+          pkcs11config getgrant --force --authurl=${{ env.TPP_AUTH_URL }} --hsmurl=${{ env.TPP_HSM_URL }} --username=${{ env.TPP_USERNAME }} --password=${{ env.TPP_PASSWORD }}
+          git clone https://github.com/sigstore/cosign.git
+          cd cosign\cmd\cosign
+          go build -tags=pkcs11key
+          .\cosign.exe version
+          echo "sign container image"
+          .\cosign.exe sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/Library/Venafi/CodeSigning/lib/venafipkcs11.so&pin-value=none" ${{ env.IMAGE }}
+         
