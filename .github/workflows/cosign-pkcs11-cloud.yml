@@ -32,7 +32,7 @@ jobs:
           write-mode: overwrite
       - name: install cloud client
         run: |
-          curl -o "cyberark-csc-latest-x86_64.deb" https://dl.venafi.cloud/cyberark-code-sign-client/cyberark-csc-latest-x86_64.deb
+          wget https://dl.venafi.cloud/cyberark-code-sign-client/cyberark-csc-latest-x86_64.deb
           sudo dpkg -i "cyberark-csc-latest-x86_64.deb"
       - name: Sign with cosign
         run: |
