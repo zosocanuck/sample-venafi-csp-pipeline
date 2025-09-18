@@ -27,9 +27,10 @@ jobs:
         shell: powershell # Uses Windows PowerShell (version 5.1)
         run: |
           Invoke-WebRequest https://dl.venafi.cloud/cyberark-code-sign-client/cyberark-csc-latest-x86_64.msi -OutFile "cyberark-csc-latest-x86_64.msi"
-          start /wait msiexec /qn /i "cyberark-csc-latest-x86_64.msi"
+          
       - name: build cosign and sign
         run: |
+          start /wait msiexec /qn /i "cyberark-csc-latest-x86_64.msi"
           pkcs11config.exe version
           pkcs11config.exe setgrant --host api.venafi.cloud --token ${{ env.CLOUD_APIKEY }}
           git clone https://github.com/sigstore/cosign.git
