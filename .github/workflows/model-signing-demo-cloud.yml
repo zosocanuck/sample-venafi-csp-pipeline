@@ -1,4 +1,4 @@
-name: model-signing-demo
+name: model-signing-demo-cloud
 on: workflow_dispatch
 
 env:
