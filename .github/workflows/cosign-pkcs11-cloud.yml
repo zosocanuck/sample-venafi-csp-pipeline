@@ -33,7 +33,7 @@ jobs:
       - name: install cloud client
         run: |
           wget https://dl.venafi.cloud/cyberark-code-sign-client/cyberark-csc-latest-x86_64.deb
-          sudo dpkg -i "cyberark-csc-latest-x86_64.deb"
+          dpkg -i "cyberark-csc-latest-x86_64.deb"
       - name: Sign with cosign
         run: |
           pkcs11config setgrant --host api.venafi.cloud --token ${{ env.CLOUD_APIKEY }}
