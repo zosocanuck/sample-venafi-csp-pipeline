@@ -23,6 +23,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Run Windows PowerShell command
+        shell: powershell # Uses Windows PowerShell (version 5.1)
+        run: |
+          Invoke-WebRequest https://dl.venafi.cloud/cyberark-code-sign-client/cyberark-csc-latest-x86_64.msi -OutFile "cyberark-csc-latest-x86_64.msi"
+          start /wait msiexec /qn /i "cyberark-csc-latest-x86_64.msi"
       - name: build cosign and sign
         run: |
           pkcs11config.exe version
