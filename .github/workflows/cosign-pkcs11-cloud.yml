@@ -36,7 +36,7 @@ jobs:
           dpkg -i "cyberark-csc-latest-x86_64.deb"
       - name: Sign with cosign
         run: |
-          pkcs11config setgrant --host api.venafi.cloud --token ${{ env.CLOUD_APIKEY }}
+          pkcs11config setgrant --host api.venafi.cloud --token ${{ env.CLOUD_APIKEY }} --force
           cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=none" ${{ env.IMAGE }}
           # cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=none" --timestamp-server-url http://timestamp.sectigo.com ${{ env.IMAGE }}
       - name: Verify with cosign
