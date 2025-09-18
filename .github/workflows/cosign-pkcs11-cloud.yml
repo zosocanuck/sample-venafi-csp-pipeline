@@ -1,0 +1,46 @@
+name: cosign-pkcs11-cloud
+on: workflow_dispatch
+
+env:
+  CERTIFICATE_LABEL: testcert1
+  CLOUD_APIKEY: ${{ secrets.CLOUD_APIKEY }}
+  IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image@sha256:521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
+  SBOM_IMAGE: ghcr.io/zosocanuck/sample-venafi-csp-image:sha256-521311a0923441ac832704e7b9fe4daa0a04685a01c9cf54ff3382fd1cde9411 #signed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: zosocanuck/venafi-csp-cosign:ubuntu
+    permissions:
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Login to Github
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Create Sectigo TSA chain file
+        uses: DamianReeves/write-file-action@v1.2
+        with:
+          path: chain.crt
+          contents: |
+            ${{ secrets.SECTIGO_TSA_CHAIN }}
+          write-mode: overwrite
+      - name: install cloud client
+        run: |
+          curl -o "cyberark-csc-latest-x86_64.deb" https://dl.venafi.cloud/cyberark-code-sign-client/cyberark-csc-latest-x86_64.deb
+          sudo dpkg -i "cyberark-csc-latest-x86_64.deb"
+      - name: Sign with cosign
+        run: |
+          pkcs11config setgrant --host api.venafi.cloud --token ${{ env.CLOUD_APIKEY }}
+          cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=none" ${{ env.IMAGE }}
+          # cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=none" --timestamp-server-url http://timestamp.sectigo.com ${{ env.IMAGE }}
+      - name: Verify with cosign
+        run: |
+          cosign verify --insecure-ignore-tlog --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" ${{ env.IMAGE }}
+          # cosign verify --insecure-ignore-tlog --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=1234" --timestamp-certificate-chain chain.crt ${{ env.IMAGE }}
+          cosign tree ${{ env.IMAGE }}
