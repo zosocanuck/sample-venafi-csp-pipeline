@@ -1,0 +1,23 @@
+name: model-signing-demo
+on: workflow_dispatch
+
+env:
+  CERTIFICATE_LABEL: test2-testcert
+  CLOUD_APIKEY: ${{ secrets.CLOUD_APIKEY }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: zosocanuck/model-signing:latest
+
+    steps:
+      - name: Sign model with sigstore model_signing python library
+        run: |
+          pkcs11config setgrant --force --host api.venafi.cloud --token ${{ env.CLOUD_APIKEY }}
+          git clone --depth=1 "https://huggingface.co/bert-base-uncased"
+          rm -rf bert-base-uncased/.git
+          cd bert-base-uncased
+          python -m model_signing sign pkcs11-key --signature /root/model.sig --pkcs11_uri "pkcs11:token=Remote%20Token;slot-id=0;object=test2-testcert?module-path=/opt/venafi/codesign/lib/venafipkcs11spy.so&pin-value=1234" .
+          pkcs11config getpublickey --label=test2-testcert --filename=/root/test-cert.pub
+          python -m model_signing verify key --signature /root/model.sig --public_key /root/test-cert.pub .
