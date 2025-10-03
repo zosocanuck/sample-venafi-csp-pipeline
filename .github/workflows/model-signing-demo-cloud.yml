@@ -2,7 +2,7 @@ name: model-signing-demo-cloud
 on: workflow_dispatch
 
 env:
-  CERTIFICATE_LABEL: test2-testcert
+  CERTIFICATE_LABEL: test-ecdsa
   CLOUD_APIKEY: ${{ secrets.CLOUD_APIKEY }}
 
 jobs:
@@ -18,6 +18,6 @@ jobs:
           git clone --depth=1 "https://huggingface.co/bert-base-uncased"
           rm -rf bert-base-uncased/.git
           cd bert-base-uncased
-          python -m model_signing sign pkcs11-key --signature /root/model.sig --pkcs11_uri "pkcs11:token=Remote%20Token;slot-id=0;object=test2-testcert?module-path=/opt/venafi/codesign/lib/venafipkcs11spy.so&pin-value=1234" .
-          pkcs11config getpublickey --label=test2-testcert --filename=/root/test-cert.pub
+          python -m model_signing sign pkcs11-key --signature /root/model.sig --pkcs11_uri "pkcs11:token=Remote%20Token;slot-id=0;object=test-ecdsa?module-path=/opt/venafi/codesign/lib/venafipkcs11spy.so&pin-value=1234" .
+          pkcs11config getpublickey --label=test-ecdsa --filename=/root/test-cert.pub
           python -m model_signing verify key --signature /root/model.sig --public_key /root/test-cert.pub .
