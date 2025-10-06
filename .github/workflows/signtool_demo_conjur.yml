@@ -10,7 +10,7 @@ jobs:
       contents: read
     steps:
       - name: Import Secrets using CyberArk Conjur Secret Fetcher
-        uses: cyberark/conjur-action@v2.0.2
+        uses: cyberark/conjur-action@v2.0.5
         with:
           url: https://cybr-secrets.secretsmgr.cyberark.cloud/api
           account: conjur
