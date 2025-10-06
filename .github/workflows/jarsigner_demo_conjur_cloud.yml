@@ -1,0 +1,34 @@
+name: jarsigner_csp_conjur_cloud
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write
+      contents: read
+    steps:
+      - name: Get Venafi CSP client
+        run: |
+          curl -o "cyberark-csc-latest-x86_64.deb" https://dl.venafi.cloud/cyberark-code-sign-client/cyberark-csc-latest-x86_64.deb
+          sudo dpkg -i "cyberark-csc-latest-x86_64.deb"
+      - name: Import Secrets using CyberArk Conjur Secret Fetcher
+        uses: cyberark/conjur-action@v2.0.6
+        with:
+          url: https://cybr-secrets.secretsmgr.cyberark.cloud/api
+          #account: ivan_wallis@cyberark.cloud.3357
+          account: conjur
+          authn_id: github_csp
+          secrets: data/vault/iwallis-safe/Misc-CustomType01/password|PASSWORD
+      - name: Authenticate
+        run: |
+          /opt/venafi/codesign/bin/pkcs11config setgrant --force --host "api.venafi.cloud" --token=${{ env.PASSWORD }}
+      - name: Get jar file to sign
+        run: |
+          wget https://vh.venafilab.com/poc_guide/test.jar -O ~/test.jar
+      - name: Get Venafi CSP PKCS#11 configuration file
+        run: |
+          wget https://vh.venafilab.com/poc_guide/venafipkcs11.txt -O ~/venafipkcs11.txt
+      - name: Sign application using jarsigner
+        run: jarsigner -verbose -J-Djava.security.debug=sunpkcs11 -keystore NONE -storetype PKCS11 -storepass none -providerclass sun.security.pkcs11.SunPKCS11 -providerArg ~/venafipkcs11.txt -certs -tsa http://vh.venafilab.com/timestamp ~/test.jar test2-testcert
