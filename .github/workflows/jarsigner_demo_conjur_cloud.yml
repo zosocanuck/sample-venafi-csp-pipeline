@@ -9,7 +9,7 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - name: Get Venafi CSP client
+      - name: Get CyberArk CSM client
         run: |
           curl -o "cyberark-csc-latest-x86_64.deb" https://dl.venafi.cloud/cyberark-code-sign-client/cyberark-csc-latest-x86_64.deb
           sudo dpkg -i "cyberark-csc-latest-x86_64.deb"
@@ -27,7 +27,7 @@ jobs:
       - name: Get jar file to sign
         run: |
           wget https://vh.venafilab.com/poc_guide/test.jar -O ~/test.jar
-      - name: Get Venafi CSP PKCS#11 configuration file
+      - name: Get CyberArk CSM PKCS#11 configuration file
         run: |
           wget https://vh.venafilab.com/poc_guide/venafipkcs11.txt -O ~/venafipkcs11.txt
       - name: Sign application using jarsigner
