@@ -1,0 +1,16 @@
+name: Signtool demo with CSM SaaS
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: cspclient
+    permissions: 
+      id-token: write
+      contents: read
+    steps:
+      - name: configure CSP
+        run: |
+          cspconfig setgrant --force --host=api.venafi.cloud --token=${{ secrets.CLOUD_APIKEY }}
+      - name: Sign application
+        run: signtool sign /fd sha256 /n scriptsteam c:\temp\sample.exe
