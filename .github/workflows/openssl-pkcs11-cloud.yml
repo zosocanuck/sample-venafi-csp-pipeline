@@ -1,0 +1,53 @@
+name: openssl-pkcs11-cloud
+on: workflow_dispatch
+
+env:
+  CERTIFICATE_LABEL: Jan8-test
+  CLOUD_APIKEY: ${{ secrets.CLOUD_APIKEY }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Code Sign Manager client
+        run: |
+          curl -o "cyberark-csc-latest-x86_64.deb" https://dl.venafi.cloud/cyberark-code-sign-client/clients/cyberark-csc-latest-x86_64.deb
+          sudo dpkg -i cyberark-csc-latest-x86_64.deb
+      - name: Install OpenSSL and PKCS#11 pre-requisites
+        run: |
+          sudo apt update
+          sudo apt install --no-install-recommends -y openssl libengine-pkcs11-openssl opensc opensc-pkcs11 pcscd
+      - name: Create OpenSSL configuration file
+        uses: DamianReeves/write-file-action@v1.2
+        with:
+          path: ${{ github.workspace }}/openssl.conf
+          contents: |
+            openssl_conf = openssl_def
+ 
+            [openssl_def]
+            engines = engine_section
+             
+            [engine_section]
+            pkcs11 = pkcs11_section
+             
+            [pkcs11_section]
+            #dynamic_path = /usr/lib/engines/engine_pkcs11.so
+            dynamic_path = /usr/lib/x86_64-linux-gnu/engines-3/pkcs11.so
+            engine_id = pkcs11
+            MODULE_PATH = /opt/venafi/codesign/lib/venafipkcs11spy.so
+            PIN = none
+            default_algorithms = ALL
+            init = 1
+      - name: Create test file for signing
+        uses: DamianReeves/write-file-action@v1.2
+        with:
+            path: ${{ github.workspace }}/test
+            contents: |
+              123456
+      - name: Sign with OpenSSL
+        run: |
+          pkcs11config setgrant --host api.venafi.cloud --token ${{ env.CLOUD_APIKEY }} --force
+          OPENSSL_CONF=./openssl.conf openssl dgst -engine pkcs11 -sign "pkcs11:object=${{ env.CERTIFICATE_LABEL }}" -keyform engine -sha256 -out test.signed.ossl test      
+      - name: Verify with OpenSSL
+        run: |
+          OPENSSL_CONF=./openssl.conf openssl dgst -engine pkcs11 -prverify "pkcs11:object=${{ env.CERTIFICATE_LABEL }}" -keyform engine -signature test.signed.ossl test
