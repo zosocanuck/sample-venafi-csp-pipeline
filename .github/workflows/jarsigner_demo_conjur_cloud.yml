@@ -11,8 +11,8 @@ jobs:
     steps:
       - name: Get CyberArk CSM client
         run: |
-          curl -o "cyberark-csc-latest-x86_64.deb" https://dl.venafi.cloud/cyberark-code-sign-client/cyberark-csc-latest-x86_64.deb
-          sudo dpkg -i "cyberark-csc-latest-x86_64.deb"
+          https://dl.ngts.paloaltonetworks.com/code-sign-client/clients/csc-latest-x86_64.deb
+          sudo dpkg -i "csc-latest-x86_64.deb"
       - name: Import Secrets using CyberArk Conjur Secret Fetcher
         uses: cyberark/conjur-action@v2.0.6
         with:
