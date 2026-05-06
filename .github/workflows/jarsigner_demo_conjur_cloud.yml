@@ -20,7 +20,7 @@ jobs:
           #account: ivan_wallis@cyberark.cloud.3357
           account: conjur
           authn_id: github_csp
-          secrets: data/vault/iwallis-safe/Misc-CustomType01/password|PASSWORD
+          secrets: data/vault/iwallis-safe/PreviewSaaSGuest0/password|PASSWORD
       - name: Authenticate
         run: |
           /opt/venafi/codesign/bin/pkcs11config setgrant --force --host "api.venafi.cloud" --token=${{ env.PASSWORD }}
