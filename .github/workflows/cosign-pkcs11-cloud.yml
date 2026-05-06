@@ -22,9 +22,17 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Import Secrets using CyberArk Conjur Secret Fetcher
+        uses: cyberark/conjur-action@v2.0.6
+        with:
+          url: https://cybr-secrets.secretsmgr.cyberark.cloud/api
+          #account: ivan_wallis@cyberark.cloud.3357
+          account: conjur
+          authn_id: github_csp
+          secrets: data/vault/iwallis-safe/PreviewSaaSGuest0/password|PASSWORD
       - name: Sign with cosign
         run: |
-          pkcs11config setgrant --host api.venafi.cloud --token ${{ env.CLOUD_APIKEY }} --force
+          pkcs11config setgrant --host api.venafi.cloud --token ${{ env.PASSWORD }} --force
           cosign sign --tlog-upload=false --key "pkcs11:slot-id=0;object=${{ env.CERTIFICATE_LABEL }}?module-path=/opt/venafi/codesign/lib/venafipkcs11.so&pin-value=none" ${{ env.IMAGE }}
       - name: Verify with cosign
         run: |
