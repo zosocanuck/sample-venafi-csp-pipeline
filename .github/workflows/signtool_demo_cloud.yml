@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   build:
-    runs-on: macbook-win11
+    runs-on: self-hosted
     permissions: 
       id-token: write
       contents: read
