@@ -33,4 +33,4 @@ jobs:
         run: |
           wget https://vh.venafilab.com/poc_guide/venafipkcs11.txt -O ~/venafipkcs11.txt
       - name: Sign application using jarsigner
-        run: jarsigner -verbose -J-Djava.security.debug=sunpkcs11 -keystore NONE -storetype PKCS11 -storepass none -providerclass sun.security.pkcs11.SunPKCS11 -providerArg ~/venafipkcs11.txt -certs -tsa http://vh.venafilab.com/timestamp ~/test.jar vsign-rsa2048-cert
+        run: jarsigner -verbose -J-Djava.security.debug=sunpkcs11 -keystore NONE -storetype PKCS11 -storepass none -providerclass sun.security.pkcs11.SunPKCS11 -providerArg ~/venafipkcs11.txt -certs -tsa https://vh.venafilab.com/timestamp ~/test.jar vsign-rsa2048-cert
