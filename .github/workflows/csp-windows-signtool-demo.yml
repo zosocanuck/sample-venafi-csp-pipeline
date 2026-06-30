@@ -24,6 +24,7 @@ jobs:
       - name: configure CSP
         run: |
           cspconfig getgrant --force --authurl=https://vh.venafilab.com/vedauth --hsmurl=https://vh.venafilab.com/vedhsm --jwtfile=${{ github.workspace}}/csp.jwt
+          cspconfig sync
       - name: Sign application
         run: signtool sign /fd sha256 /n signer.example.com c:\temp\sample.exe
 
