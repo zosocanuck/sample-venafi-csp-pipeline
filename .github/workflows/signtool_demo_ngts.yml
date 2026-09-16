@@ -11,6 +11,7 @@ jobs:
     steps:
       - name: configure CSP
         run: |
-          cspconfig login --host 1431985321.ngts.paloaltonetworks.com --clientid ba0bde2c-7a13-11f1-afce-de74cc99657f --keyfile "C:\Users\Ivan Wallis\Desktop\ngts-demo.key"
+          cspconfig login --host 1431985321.ngts.paloaltonetworks.com --clientid ba0bde2c-7a13-11f1-afce-de74cc99657f --keyfile "C:\Users\Ivan Wallis\Desktop\ngts-demo.key" --force
+          cspconfig sync
       - name: Sign application
         run: signtool sign /fd sha256 /n iwallis-ngts-prod-test1 c:\temp\sample.exe
