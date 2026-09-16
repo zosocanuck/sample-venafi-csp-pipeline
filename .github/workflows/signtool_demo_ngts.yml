@@ -2,6 +2,10 @@ name: Signtool demo with NGTS
 
 on: workflow_dispatch
 
+env:
+  NGTS_HOST_ID: 1431985321   
+  NGTS_CLIENT_ID: ba0bde2c-7a13-11f1-afce-de74cc99657f
+
 jobs:
   build:
     runs-on: self-hosted
@@ -22,7 +26,7 @@ jobs:
       - name: Configure CSP
         shell: powershell
         run: |
-          cspconfig login --host 1431985321.ngts.paloaltonetworks.com --clientid ba0bde2c-7a13-11f1-afce-de74cc99657f --keyfile "${{ steps.create-key.outputs.KEY_PATH }}" --force
+          cspconfig login --host "${{ env.NGTS_HOST_ID }}.ngts.paloaltonetworks.com" --clientid "${{ env.NGTS_CLIENT_ID }}" --keyfile "${{ steps.create-key.outputs.KEY_PATH }}" --force          
           cspconfig sync
 
       - name: Sign application
