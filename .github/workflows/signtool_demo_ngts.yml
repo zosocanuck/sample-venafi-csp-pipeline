@@ -5,13 +5,34 @@ on: workflow_dispatch
 jobs:
   build:
     runs-on: self-hosted
-    permissions: 
+    permissions:
       id-token: write
       contents: read
     steps:
-      - name: configure CSP
+      - name: Create temporary key file
+        id: create-key
+        shell: powershell
+        env:
+          NGTS_PRIVATE_KEY: ${{ secrets.NGTS_PRIVATE_KEY }}
         run: |
-          cspconfig login --host 1431985321.ngts.paloaltonetworks.com --clientid ba0bde2c-7a13-11f1-afce-de74cc99657f --keyfile "C:\Users\Ivan Wallis\Desktop\ngts-demo.key" --force
+          $tempKeyPath = [System.IO.Path]::GetTempFileName()
+          Set-Content -Path $tempKeyPath -Value $env:NGTS_PRIVATE_KEY -NoNewline
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "KEY_PATH=$tempKeyPath"
+
+      - name: Configure CSP
+        shell: powershell
+        run: |
+          cspconfig login --host 1431985321.ngts.paloaltonetworks.com --clientid ba0bde2c-7a13-11f1-afce-de74cc99657f --keyfile "${{ steps.create-key.outputs.KEY_PATH }}" --force
           cspconfig sync
+
       - name: Sign application
         run: signtool sign /fd sha256 /n builtin-test-signer c:\temp\sample.exe
+
+      - name: Delete temporary key file
+        if: always()
+        shell: powershell
+        run: |
+          $keyPath = "${{ steps.create-key.outputs.KEY_PATH }}"
+          if ($keyPath -and (Test-Path $keyPath)) {
+            Remove-Item -Path $keyPath -Force
+          }
